@@ -32,7 +32,7 @@ public class DataRunner implements CommandLineRunner {
 
         // ****** FIND BY ID
         // this.usersService.addUser(user1);
-        User user1FromDB = this.usersService.findById("b9d38a58-a36d-49a0-b353-032a9d47c9f6");
+        // User user1FromDB = this.usersService.findById("b9d38a58-a36d-49a0-b353-032a9d47c9f6");
 
         // System.out.println(user1FromDB);
         
