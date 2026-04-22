@@ -1,10 +1,13 @@
 package giuseppetavella.demo_login_system.services;
 
+import giuseppetavella.demo_login_system.entities.Article;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.InvalidUUIDStringException;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.exceptions.UnauthorizedException;
 import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.UpdatedArticleSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.UpdatedProfileSentDTO;
 import giuseppetavella.demo_login_system.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -93,10 +96,17 @@ public class UsersService {
 
 
     /**
-     * Update a user by ID.
+     * Update my profile, given the ID.
      */
-    // public updateById() {}
-    
+
+    public User updateOwnProfile(User profile, 
+                                 UpdatedProfileSentDTO profileBody)
+    {
+        profile.setFirstname(profileBody.firstname());
+        profile.setLastname(profileBody.lastname());
+        return this.usersRepository.save(profile);
+    }
+
     
     
 }

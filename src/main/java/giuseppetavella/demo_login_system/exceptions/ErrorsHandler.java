@@ -1,6 +1,7 @@
 package giuseppetavella.demo_login_system.exceptions;
 
 import giuseppetavella.demo_login_system.payloads.in_response.ErrorsToSendDTO;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -65,6 +66,14 @@ public class ErrorsHandler {
     //     return new ErrorsToSendDTO(msg);
     // }
 
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorsToSendDTO handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        return new ErrorsToSendDTO("Some data violates data integrity.");
+    }
+    
+    
     
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

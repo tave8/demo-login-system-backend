@@ -27,7 +27,7 @@ public class ArticlesController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ArticleToSendDTO addArticle(@RequestBody @Validated NewArticleSentDTO body,
+    public ArticleToSendDTO addOwnArticle(@RequestBody @Validated NewArticleSentDTO body,
                                        @AuthenticationPrincipal User currentUser) 
     {
         return new ArticleToSendDTO(

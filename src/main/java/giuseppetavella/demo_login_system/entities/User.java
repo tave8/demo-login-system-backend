@@ -1,6 +1,7 @@
 package giuseppetavella.demo_login_system.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import giuseppetavella.demo_login_system.exceptions.InvalidDataException;
 import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -78,7 +79,10 @@ public class User implements UserDetails {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
+    public void setFirstname(String firstname) throws InvalidDataException {
+        if(firstname == null) {
+            throw new InvalidDataException("Firstname cannot be null.");
+        }
         this.firstname = firstname;
     }
 
@@ -86,7 +90,10 @@ public class User implements UserDetails {
         return lastname;
     }
 
-    public void setLastname(String lastname) {
+    public void setLastname(String lastname) throws InvalidDataException {
+        if(lastname == null) {
+            throw new InvalidDataException("Lastname cannot be null.");
+        }
         this.lastname = lastname;
     }
     
