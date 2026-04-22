@@ -1,5 +1,165 @@
 # Endpoints
 
+## /auth
+
+### POST /login
+
+Request
+
+```
+email: str
+password: str
+```
+
+Response 
+
+```
+accessToken: str
+```
+
+### POST /register
+
+Request 
+
+```
+email: str
+password: str
+firstname: str
+lastname: str
+```
+
+Response
+
+```
+userId: str
+```
+
+
+## /users
+
+
+### GET /me
+
+Response
+
+```
+userId: str
+email: str 
+firstname: str
+lastname: str
+avatarUrl: str
+createdAt: timestamp
+```
+
+
+### PUT /me
+
+
+Request
+
+```
+firstname: str
+lastname: str
+```
+
+Response
+
+```
+userId: str
+email: str 
+firstname: str
+lastname: str
+avatarUrl: str
+createdAt: timestamp
+```
+
+## /articles
+
+
+### GET /me
+
+
+Response
+
+```
+content = [
+    {
+        articleId: str
+        title: str
+        content: str
+        coverUrl: str
+        createdAt: timestamp
+    }
+]
+```
+
+
+
+### GET /:articleId
+
+Response 
+
+```
+articleId: str
+title: str
+content: str
+coverUrl: str
+createdAt: timestamp
+```
+
+### POST /
+
+Request
+
+```
+title: str
+content: str
+```
+
+Response 
+
+```
+articleId: str
+title: str
+content: str
+coverUrl: str
+createdAt: timestamp
+```
+
+
+### PUT /:articleId
+
+Request
+
+```
+title: str
+content: str
+```
+
+Response
+
+```
+articleId: str
+title: str
+content: str
+coverUrl: str
+createdAt: timestamp
+```
+
+### DELETE /:articleId
+
+
+
+Response
+
+```
+no response
+```
+
+
+
+# Endpoints - overview
+
 ```
 
 /auth
@@ -18,6 +178,7 @@
     DELETE /:articleId       (deletes an article, requires that it's my article)
     
 ```
+
 
 
 
