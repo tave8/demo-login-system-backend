@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -102,10 +103,13 @@ public class TokenFilter extends OncePerRequestFilter {
      * for all endpoints starting with /auth
      */
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        // TODO: experiment with a different logic:
-        //    example: use "not" instead of negating with AntPathMatcher 
-        return new AntPathMatcher().match("/auth/**", request.getServletPath());
+        AntPathMatcher matcher = new AntPathMatcher();
+        String path = request.getServletPath();
 
+        boolean isAuthPath = matcher.match("/auth/**", path);
+        boolean isRoot = matcher.match("/", path);
+        
+        return isAuthPath || isRoot;
     }
 
 }
