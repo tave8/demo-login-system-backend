@@ -18,13 +18,15 @@ public class DataRunner implements CommandLineRunner {
         // System.out.println("hello");
         
         User user1 = new User(
-                "giuseppetavella8@gmail.com",
+                "giuseppetavella8+@gmail.com",
                 "1234",
                 "Giuseppe",
                 "Tavella"
         );
 
-        System.out.println(this.usersService.existsByEmail("giuseppetavella8@gmail.com"));
+        // this.usersService.addUser(user1);
+        
+        // System.out.println(this.usersService.existsByEmail("giuseppetavella8@gmail.com"));
         
     }
 }
