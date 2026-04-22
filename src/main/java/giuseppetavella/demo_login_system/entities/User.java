@@ -110,4 +110,14 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                ", userId=" + userId +
+                ", email='" + email + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                '}';
+    }
 }

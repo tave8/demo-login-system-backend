@@ -1,6 +1,8 @@
 package giuseppetavella.demo_login_system.services;
 
 import giuseppetavella.demo_login_system.entities.User;
+import giuseppetavella.demo_login_system.exceptions.InvalidDataFormatException;
+import giuseppetavella.demo_login_system.exceptions.InvalidUUIDStringException;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.exceptions.UnauthorizedException;
 import giuseppetavella.demo_login_system.payloads.in_request.NewUserSentDTO;
@@ -27,6 +29,31 @@ public class UsersService {
         return usersRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId, "user"));
     }
 
+    public User findById(String userId) throws NotFoundException {
+        try {
+            return this.findById(UUID.fromString(userId));
+        } catch(IllegalArgumentException ex) {
+            throw new InvalidUUIDStringException(userId);
+        }
+    }
+
+    /**
+     * A user with the given email exists?
+     */
+    public boolean existsByEmail(String email) {
+        return this.usersRepository.existsByEmail(email);
+    }
+
+    /**
+     * A user with this ID exists?
+     */
+    public boolean existsById(UUID userId) {
+        if(userId == null) {
+            return false;
+        }
+        return this.usersRepository.existsById(userId);
+    }
+    
     /**
      * Add a user.
      * Checks if the email does not exist.
@@ -51,12 +78,6 @@ public class UsersService {
         return this.addUser(newUser);
     }
 
-    /**
-     * A user with the given email exists?
-     */
-    public boolean existsByEmail(String email) {
-        return this.usersRepository.existsByEmail(email);
-    }
 
     /**
      * Update a user by ID.

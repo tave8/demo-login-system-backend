@@ -9,7 +9,8 @@ import java.util.UUID;
 
 @Repository
 public interface UsersRepository extends JpaRepository<User, UUID> {
-
+    
+    
     /**
      * The user with the given email exists?
      */
