@@ -2,6 +2,12 @@ package giuseppetavella.demo_login_system.controllers;
 
 
 // import giuseppetavella.demo_login_system.services.AuthService;
+import giuseppetavella.demo_login_system.entities.User;
+import giuseppetavella.demo_login_system.exceptions.PayloadValidationException;
+import giuseppetavella.demo_login_system.payloads.in_request.NewUserSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_response.AfterRegistrationDTO;
+import giuseppetavella.demo_login_system.services.AuthService;
+import giuseppetavella.demo_login_system.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -14,11 +20,11 @@ import java.util.List;
 @RequestMapping("/auth")
 public class AuthController {
 
-    // @Autowired
-    // private AuthService authService;
-    //
-    // @Autowired
-    // private DipendentiService dipendentiService;
+    @Autowired
+    private AuthService authService;
+    
+    @Autowired
+    private UsersService usersService;
     //
     //
     // @PostMapping("/login")
@@ -27,20 +33,21 @@ public class AuthController {
     //     return new LoginDaMandareDTO(accessToken);
     // }
     //
-    // @PostMapping("/register")
-    // @ResponseStatus(HttpStatus.CREATED)
-    // public NuovoDipendenteDaMandareDTO register(@RequestBody @Validated NuovoDipendenteMandatoDTO body,
-    //                                             BindingResult validation) {
-    //
-    //     if (validation.hasErrors()) {
-    //         List<String> errors = validation.getFieldErrors().stream().map(error -> error.getDefaultMessage()).toList();
-    //         throw new ValidazionePayloadException(errors);
-    //     }
-    //
-    //     Dipendente nuovoDipendente = this.dipendentiService.aggiungiNuovoDipendente(body);
-    //
-    //     return new NuovoDipendenteDaMandareDTO(nuovoDipendente);
-    //
-    // }
+    
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public AfterRegistrationDTO register(@RequestBody @Validated NewUserSentDTO body,
+                                         BindingResult validation) {
+
+        if (validation.hasErrors()) {
+            List<String> errors = validation.getFieldErrors().stream().map(error -> error.getDefaultMessage()).toList();
+            throw new PayloadValidationException(errors);
+        }
+
+        User newUser = this.usersService.addUser(body);
+
+        return new AfterRegistrationDTO(newUser);
+
+    }
 
 }
