@@ -44,7 +44,7 @@ public class User implements UserDetails {
     protected User() {}
     
     public User(String email, String password, String firstname, String lastname) {
-        this.email = email;
+        this.email = email.toLowerCase();
         this.password = password;
         this.setFirstname(firstname);
         this.setLastname(lastname);

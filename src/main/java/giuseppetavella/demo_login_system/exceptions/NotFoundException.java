@@ -3,12 +3,13 @@ package giuseppetavella.demo_login_system.exceptions;
 import java.util.UUID;
 
 public class NotFoundException extends RuntimeException {
-    public NotFoundException(UUID id) {
-        super("L'elemento con ID " + id + " non è stato trovato.");
+    public NotFoundException(UUID itemId) {
+        super("The item with ID " + itemId + " has not been found.");
     }
+    
 
-    public NotFoundException(UUID id, String informalEntity) {
-        super("L'elemento '" + informalEntity + "' con ID " + id + " non è stato trovato.");
+    public NotFoundException(UUID itemId, String informalEntity) {
+        super("The item '" + informalEntity + "' with ID " + itemId + " has not been found.");
     }
 
     public NotFoundException(String msg) {
