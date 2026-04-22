@@ -32,6 +32,19 @@ public class ArticlesService {
         return articlesRepository.findById(articleId).orElseThrow(() -> new NotFoundException(articleId, "article"));
     }
 
+    /**
+     * Find my article by ID.
+     * The owner of the article must match the given user.
+     */
+    public Article findOwnArticleById(UUID articleId, User articleOwner) throws NotFoundException, UnauthorizedException {
+        Article article = this.findById(articleId);
+        boolean isSameOwner = article.getUser().getUserId().equals(articleOwner.getUserId());
+        if(!isSameOwner) {
+            throw new UnauthorizedException("This is not your article.");
+        }
+        return article;
+    }
+
 
     /**
      * Get articles of the given user.

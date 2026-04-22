@@ -11,6 +11,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/articles")
 public class ArticlesController {
@@ -18,6 +20,9 @@ public class ArticlesController {
     @Autowired
     private ArticlesService articlesService;
 
+    /**
+     * Add article as my profile.
+     */
     @PostMapping
     public ArticleToSendDTO addArticle(@RequestBody @Validated NewArticleSentDTO body,
                                        @AuthenticationPrincipal User currentUser) 
@@ -26,7 +31,10 @@ public class ArticlesController {
                 this.articlesService.addArticle(body, currentUser)
         );
     }
-    
+
+    /**
+     * Get my articles.
+     */
     @GetMapping("/me")
     public Page<ArticleToSendDTO> findOwnArticles(@AuthenticationPrincipal User currentUser, 
                                                   @RequestParam(defaultValue = "0") int page,
@@ -37,4 +45,16 @@ public class ArticlesController {
         return pagedArticles.map(article -> new ArticleToSendDTO(article));
     }
 
+    /**
+     * Get my article, given the ID.
+     */
+    @GetMapping("/{articleId}")
+    public ArticleToSendDTO findOwnArticleById(@AuthenticationPrincipal User currentUser, 
+                                                     @PathVariable UUID articleId)
+    {
+        return new ArticleToSendDTO(    
+                this.articlesService.findOwnArticleById(articleId, currentUser)
+        );
+    }
+    
 }
