@@ -2,8 +2,6 @@
 
 ```
 
-
-
 /auth
     POST /login      (login)
     POST /register  (create new profile/account)
@@ -20,6 +18,8 @@
     DELETE /:articleId       (deletes an article, requires that it's my article)
     
 ```
+
+
 
 
 

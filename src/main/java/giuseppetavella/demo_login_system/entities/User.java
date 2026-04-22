@@ -1,22 +1,101 @@
 package giuseppetavella.demo_login_system.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
-
+@Entity
+@Table(name="users")
 // this annotation allows us to never send these fields in a response
 @JsonIgnoreProperties({"password", "accountNonExpired",
                         "accountNonLocked", "authorities",
                         "credentialsNonExpired", "enabled"})
 public class User implements UserDetails {
     
+    @Id
+    @GeneratedValue
+    private UUID userId;
     
+    @Column(nullable = false, unique = true)
+    private String email;
     
+    @Column(nullable = false)
+    private String password;
+    
+    @Column(name = "firstname", nullable = false)
+    private String firstname;
+
+    @Column(name = "lastname", nullable = false)
+    private String lastname;
+
+    @Column(name = "avatar_url", nullable = false)
+    private String avatarUrl;
+    
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+    
+    protected User() {}
+    
+    public User(String email, String password, String firstname, String lastname) {
+        this.email = email;
+        this.password = password;
+        this.setFirstname(firstname);
+        this.setLastname(lastname);
+        this.setAvatarUrl(this.getDefaultAvatarUrl());
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    private String getDefaultAvatarUrl() {
+        String fullname = this.getFirstname() + "+" + this.getLastname();
+        return "https://ui-avatars.com/api/?name=" + fullname;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+
+    public String getEmail() {
+        return email;
+    }
+    
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+    
+
+    public UUID getUserId() {
+        return userId;
+    }
+    
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
@@ -24,11 +103,11 @@ public class User implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return "";
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return email;
     }
 }
