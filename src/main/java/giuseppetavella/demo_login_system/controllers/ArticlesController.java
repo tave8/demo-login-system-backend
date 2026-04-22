@@ -8,6 +8,7 @@ import giuseppetavella.demo_login_system.payloads.in_response.ArticleToSendDTO;
 import giuseppetavella.demo_login_system.services.ArticlesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class ArticlesController {
      * Add article as my profile.
      */
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ArticleToSendDTO addArticle(@RequestBody @Validated NewArticleSentDTO body,
                                        @AuthenticationPrincipal User currentUser) 
     {
@@ -71,6 +73,18 @@ public class ArticlesController {
                 this.articlesService.updateOwnArticleById(articleId, body, currentUser)
         );
     }
+
+    /**
+     * Delete my article, given the ID.
+     */
+    @DeleteMapping("/{articleId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOwnArticleById(@AuthenticationPrincipal User currentUser,
+                                                 @PathVariable UUID articleId)
+    {
+        this.articlesService.deleteOwnArticleById(articleId, currentUser);
+    }
+
 
 
 }

@@ -104,5 +104,17 @@ public class ArticlesService {
         article.setContent(articleBody.content());
         return this.articlesRepository.save(article);
     }
+
+
+    /**
+     * Delete my article, given the ID.
+     */
+
+    public void deleteOwnArticleById(UUID articleId,
+                                     User articleOwner) throws NotFoundException, UnauthorizedException
+    {
+        Article article = this.findOwnArticleById(articleId, articleOwner);
+        this.articlesRepository.delete(article);
+    }
     
 }
