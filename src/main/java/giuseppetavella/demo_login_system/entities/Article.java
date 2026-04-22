@@ -50,6 +50,9 @@ public class Article {
     }
 
     public void setContent(String content) throws InvalidDataException {
+        if(content == null) {
+            throw new InvalidDataException("The content of an article cannot be null.");
+        }
         if(content.trim().isEmpty()) {
             throw new InvalidDataException("The content of an article cannot be empty.");
         }
@@ -61,6 +64,9 @@ public class Article {
     }
 
     public void setTitle(String title) throws InvalidDataException {
+        if(title == null) {
+            throw new InvalidDataException("The title of an article cannot be null.");
+        }
         if(title.trim().isEmpty()) {
             throw new InvalidDataException("The title of an article cannot be empty.");
         }

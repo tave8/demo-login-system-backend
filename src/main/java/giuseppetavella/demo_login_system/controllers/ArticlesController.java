@@ -3,6 +3,7 @@ package giuseppetavella.demo_login_system.controllers;
 import giuseppetavella.demo_login_system.entities.Article;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.payloads.in_request.NewArticleSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.UpdatedArticleSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.ArticleToSendDTO;
 import giuseppetavella.demo_login_system.services.ArticlesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class ArticlesController {
                                        @AuthenticationPrincipal User currentUser) 
     {
         return new ArticleToSendDTO(
-                this.articlesService.addArticle(body, currentUser)
+                this.articlesService.addOwnArticle(body, currentUser)
         );
     }
 
@@ -56,5 +57,20 @@ public class ArticlesController {
                 this.articlesService.findOwnArticleById(articleId, currentUser)
         );
     }
-    
+
+
+    /**
+     * Update my article, given the ID.
+     */
+    @PutMapping("/{articleId}")
+    public ArticleToSendDTO updateOwnArticleById(@AuthenticationPrincipal User currentUser,
+                                                 @PathVariable UUID articleId,
+                                                 @RequestBody @Validated UpdatedArticleSentDTO body)
+    {
+        return new ArticleToSendDTO(
+                this.articlesService.updateOwnArticleById(articleId, body, currentUser)
+        );
+    }
+
+
 }

@@ -5,6 +5,7 @@ import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.exceptions.UnauthorizedException;
 import giuseppetavella.demo_login_system.payloads.in_request.NewArticleSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.UpdatedArticleSentDTO;
 import giuseppetavella.demo_login_system.repositories.ArticlesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,14 @@ public class ArticlesService {
     private UsersService usersService;
 
     /**
+     * Is the user of the article the same as
+     * the owner of the article?
+     */
+    public boolean isMyArticle(User owner, User maybeOwner) {
+        return owner.getUserId().equals(maybeOwner.getUserId());
+    } 
+
+    /**
      * Find an article by ID.
      */
     public Article findById(UUID articleId) throws NotFoundException {
@@ -38,8 +47,7 @@ public class ArticlesService {
      */
     public Article findOwnArticleById(UUID articleId, User articleOwner) throws NotFoundException, UnauthorizedException {
         Article article = this.findById(articleId);
-        boolean isSameOwner = article.getUser().getUserId().equals(articleOwner.getUserId());
-        if(!isSameOwner) {
+        if(!this.isMyArticle(articleOwner, article.getUser())) {
             throw new UnauthorizedException("This is not your article.");
         }
         return article;
@@ -73,7 +81,7 @@ public class ArticlesService {
         return this.articlesRepository.save(article);
     }
     
-    public Article addArticle(NewArticleSentDTO articleBody, User articleOwner) throws NotFoundException {
+    public Article addOwnArticle(NewArticleSentDTO articleBody, User articleOwner) throws NotFoundException {
         Article article = new Article(
                 articleOwner,
                 articleBody.title(),
@@ -82,4 +90,19 @@ public class ArticlesService {
         return this.addArticle(article);
     }
 
+
+    /**
+     * Update my article, given the ID.
+     */
+
+    public Article updateOwnArticleById(UUID articleId, 
+                                        UpdatedArticleSentDTO articleBody, 
+                                        User articleOwner) throws NotFoundException, UnauthorizedException 
+    {
+        Article article = this.findOwnArticleById(articleId, articleOwner);
+        article.setTitle(articleBody.title());
+        article.setContent(articleBody.content());
+        return this.articlesRepository.save(article);
+    }
+    
 }

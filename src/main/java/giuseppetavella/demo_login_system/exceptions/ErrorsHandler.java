@@ -52,6 +52,11 @@ public class ErrorsHandler {
         return new ErrorsToSendDTO(ex.getMessage(), ex.getErrors());
     }
 
+    @ExceptionHandler(InvalidDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsToSendDTO handleInvalidDataException(InvalidDataException ex) {
+        return new ErrorsToSendDTO(ex.getMessage());
+    }
 
     // @ExceptionHandler(CaricamentoFileException.class)
     // @ResponseStatus(HttpStatus.BAD_REQUEST)
