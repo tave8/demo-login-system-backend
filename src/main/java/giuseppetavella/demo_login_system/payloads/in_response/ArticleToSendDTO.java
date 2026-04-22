@@ -5,7 +5,7 @@ import giuseppetavella.demo_login_system.entities.Article;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class ArticleAfterAddedDTO {
+public class ArticleToSendDTO {
     
     private final UUID articleId;
     private final String title;
@@ -13,7 +13,7 @@ public class ArticleAfterAddedDTO {
     private final String coverUrl;
     private final LocalDateTime createdAt;
     
-    public ArticleAfterAddedDTO(Article article) {
+    public ArticleToSendDTO(Article article) {
         this.articleId = article.getArticleId();
         this.title = article.getTitle();
         this.content = article.getContent();
