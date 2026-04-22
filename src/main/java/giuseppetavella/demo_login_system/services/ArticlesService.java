@@ -4,6 +4,7 @@ import giuseppetavella.demo_login_system.entities.Article;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.exceptions.UnauthorizedException;
+import giuseppetavella.demo_login_system.payloads.in_request.NewArticleSentDTO;
 import giuseppetavella.demo_login_system.repositories.ArticlesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -59,5 +60,13 @@ public class ArticlesService {
         return this.articlesRepository.save(article);
     }
     
+    public Article addArticle(NewArticleSentDTO articleBody, User articleOwner) throws NotFoundException {
+        Article article = new Article(
+                articleOwner,
+                articleBody.title(),
+                articleBody.content()
+        );
+        return this.addArticle(article);
+    }
 
 }

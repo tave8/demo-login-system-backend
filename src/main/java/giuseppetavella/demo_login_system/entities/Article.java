@@ -1,5 +1,6 @@
 package giuseppetavella.demo_login_system.entities;
 
+import giuseppetavella.demo_login_system.exceptions.InvalidDataException;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -48,7 +49,10 @@ public class Article {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(String content) throws InvalidDataException {
+        if(content.trim().isEmpty()) {
+            throw new InvalidDataException("The content of an article cannot be empty.");
+        }
         this.content = content;
     }
 
@@ -56,7 +60,10 @@ public class Article {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(String title) throws InvalidDataException {
+        if(title.trim().isEmpty()) {
+            throw new InvalidDataException("The title of an article cannot be empty.");
+        }
         this.title = title;
     }
 
