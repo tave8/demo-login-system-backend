@@ -218,3 +218,8 @@ Article
 1 article --written by--> 1 user
 
 ```
+
+
+# Configuration
+
+Run/Edit configuration. Spring must be in "local" profile when in local environment?

@@ -111,6 +111,9 @@ public class ErrorsHandler {
         return new ErrorsToSendDTO(msg);
     }
 
+    /**
+     * This is the 404 error.
+     */
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorsToSendDTO handleMissingRoute(NoResourceFoundException ex) {

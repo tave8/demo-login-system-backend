@@ -22,6 +22,17 @@ public class UsersController {
 
 
     /**
+     * Get my profile.
+     */
+    @GetMapping("/me")
+    public ProfileToSendDTO getOwnProfile(@AuthenticationPrincipal User currentUser)
+    {
+        return new ProfileToSendDTO(
+                this.usersService.findById(currentUser.getUserId())
+        );
+    }
+    
+    /**
      * Update my profile.
      */
     @PutMapping("/me")
