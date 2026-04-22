@@ -9,12 +9,20 @@ import java.util.UUID;
 
 @Repository
 public interface UsersRepository extends JpaRepository<User, UUID> {
-    
+
+
+    /**
+     * Find a user by email.
+     */
+    @Query("SELECT u FROM User u WHERE LOWER(u.email) = LOWER(:email)")
+    User findByEmail(String email);
     
     /**
      * The user with the given email exists?
      */
     @Query("SELECT COUNT(u) > 0 FROM User u WHERE LOWER(u.email) = LOWER(:email)")
     boolean existsByEmail(String email);
+    
+    
     
 }

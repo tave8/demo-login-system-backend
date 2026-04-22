@@ -4,7 +4,9 @@ package giuseppetavella.demo_login_system.controllers;
 // import giuseppetavella.demo_login_system.services.AuthService;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.PayloadValidationException;
-import giuseppetavella.demo_login_system.payloads.in_request.NewUserSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.LoginSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_response.AfterLoginDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterRegistrationDTO;
 import giuseppetavella.demo_login_system.services.AuthService;
 import giuseppetavella.demo_login_system.services.UsersService;
@@ -25,18 +27,18 @@ public class AuthController {
     
     @Autowired
     private UsersService usersService;
-    //
-    //
-    // @PostMapping("/login")
-    // public LoginDaMandareDTO login(@RequestBody @Validated LoginMandatoDTO body) {
-    //     String accessToken = authService.checkCredentialsAndGenerateToken(body);
-    //     return new LoginDaMandareDTO(accessToken);
-    // }
-    //
+
+
+    @PostMapping("/login")
+    public AfterLoginDTO login(@RequestBody @Validated LoginSentDTO body) {
+        String accessToken = authService.checkCredentialsAndGenerateToken(body);
+        return new AfterLoginDTO(accessToken);
+    }
+
     
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public AfterRegistrationDTO register(@RequestBody @Validated NewUserSentDTO body,
+    public AfterRegistrationDTO register(@RequestBody @Validated RegistrationSentDTO body,
                                          BindingResult validation) {
 
         if (validation.hasErrors()) {
