@@ -66,7 +66,10 @@ public class SecurityConfig {
 
         // Here we define a whitelist  of allowed origins
         configuration.setAllowedOrigins(List.of(serverLocalDomain, 
-                "https://api.demo-login-system.giuseppetavella.com"
+                // production frontend
+                "https://api.demo-login-system.giuseppetavella.com",
+                // local frontend
+                "http://localhost:5001"
         ));
         
 
