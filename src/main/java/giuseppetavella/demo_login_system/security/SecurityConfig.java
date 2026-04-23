@@ -58,7 +58,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(@Value("${server.local-domain}") String serverLocalDomain) {
+    public CorsConfigurationSource corsConfigurationSource(@Value("${server.url}") String serverLocalDomain) {
 
         // System.out.println("server local domain:" + serverLocalDomain);
 
@@ -66,9 +66,9 @@ public class SecurityConfig {
 
         // Here we define a whitelist  of allowed origins
         configuration.setAllowedOrigins(List.of(serverLocalDomain, 
-                "https://demo-spring-boot-production-10ef.up.railway.app",
                 "https://api.demo-login-system.giuseppetavella.com"
         ));
+        
 
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
