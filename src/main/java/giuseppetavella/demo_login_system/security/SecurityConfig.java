@@ -65,9 +65,11 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Here we define a whitelist  of allowed origins
-        configuration.setAllowedOrigins(List.of(serverLocalDomain, 
+        configuration.setAllowedOriginPatterns(List.of(serverLocalDomain, 
                 // production frontend
                 "https://demo-login-system.giuseppetavella.com",
+                // preview frontend
+                "https://*.demo-login-system-frontend.pages.dev",
                 // local frontend
                 "http://localhost:5001"
         ));
