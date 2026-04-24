@@ -58,20 +58,26 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(@Value("${server.url}") String serverLocalDomain) {
+    public CorsConfigurationSource corsConfigurationSource(@Value("${server.url}") String serverLocalDomain,
+                                                           @Value("${frontend.production.url}") String frontendProductionUrl,
+                                                           @Value("${frontend.preview.url-pattern}") String frontendPreviewUrlPattern,
+                                                           @Value("${frontend.local.url}") String frontendLocalUrl) 
+    {
 
         // System.out.println("server local domain:" + serverLocalDomain);
 
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Here we define a whitelist  of allowed origins
-        configuration.setAllowedOriginPatterns(List.of(serverLocalDomain, 
-                // production frontend
-                "https://demo-login-system.giuseppetavella.com",
-                // preview frontend
-                "https://*.demo-login-system-frontend.pages.dev",
-                // local frontend
-                "http://localhost:5001"
+        configuration.setAllowedOriginPatterns(List.of(
+                // do i need this?
+                serverLocalDomain, 
+                // frontend: production
+                frontendProductionUrl,
+                // frontend: preview
+                frontendPreviewUrlPattern,
+                // frontend: local
+                frontendLocalUrl
         ));
         
 
