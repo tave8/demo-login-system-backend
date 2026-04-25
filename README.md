@@ -1,3 +1,29 @@
+
+
+# Endpoints - overview
+
+```
+
+/auth
+    POST /login      (login)
+    POST /register  (create new profile/account)
+
+/users
+    GET /me        (get my profile)
+    PUT /me         (update my profile)
+    
+/articles
+    GET /                  (get my articles)
+    GET /:articleId        (get article, requires that it's my article)
+    POST /                  (add article as my profile)
+    PUT /:articleId         (updates an article, requires that it's my article)
+    DELETE /:articleId       (deletes an article, requires that it's my article)
+    
+```
+
+
+
+
 # Endpoints
 
 ## /auth
@@ -76,7 +102,7 @@ createdAt: timestamp
 ## /articles
 
 
-### GET /me
+### GET /
 
 
 Response
@@ -156,28 +182,6 @@ Response
 no response
 ```
 
-
-
-# Endpoints - overview
-
-```
-
-/auth
-    POST /login      (login)
-    POST /register  (create new profile/account)
-
-/users
-    GET /me        (get my profile)
-    PUT /me         (update my profile)
-    
-/articles
-    GET /me                (get my articles)
-    GET /:articleId        (get article, requires that it's my article)
-    POST /                  (add article as my profile)
-    PUT /:articleId         (updates an article, requires that it's my article)
-    DELETE /:articleId       (deletes an article, requires that it's my article)
-    
-```
 
 
 
