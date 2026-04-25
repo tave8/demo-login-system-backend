@@ -38,7 +38,7 @@ public class ArticlesController {
     /**
      * Get my articles.
      */
-    @GetMapping("/")
+    @GetMapping
     public Page<ArticleToSendDTO> findOwnArticles(@AuthenticationPrincipal User currentUser, 
                                                   @RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "10") int size,
