@@ -22,12 +22,12 @@ public class DataRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         // System.out.println("hello");
         
-        User user1 = new User(
-                "giuseppetavella8+@gmail.com",
-                "1234",
-                "Giuseppe",
-                "Tavella"
-        );
+        // User user1 = new User(
+        //         "giuseppetavella8+@gmail.com",
+        //         "1234",
+        //         "Giuseppe",
+        //         "Tavella"
+        // );
         
 
         // ****** FIND BY ID
@@ -35,12 +35,12 @@ public class DataRunner implements CommandLineRunner {
         // User user1FromDB = this.usersService.findById("b9d38a58-a36d-49a0-b353-032a9d47c9f6");
 
         // System.out.println(user1FromDB);
-        
-        Article article1 = new Article(
-            user1,
-            "article 1",
-            "content"    
-        );
+        //
+        // Article article1 = new Article(
+        //     user1,
+        //     "article 1",
+        //     "content"    
+        // );
         
         // this.articlesService.addArticle(article1);
         // System.out.println(this.usersService.existsByEmail("giuseppetavella8@gmail.com"));
