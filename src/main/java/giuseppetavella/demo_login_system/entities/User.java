@@ -1,10 +1,12 @@
 package giuseppetavella.demo_login_system.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import giuseppetavella.demo_login_system.enums.UserRole;
 import giuseppetavella.demo_login_system.exceptions.InvalidDataException;
 import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.OffsetDateTime;
@@ -39,19 +41,32 @@ public class User implements UserDetails {
     @Column(name = "avatar_url", nullable = false)
     private String avatarUrl;
     
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+    
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
     
     protected User() {}
     
-    public User(String email, String password, String firstname, String lastname) {
+    public User(String email, String password, String firstname, String lastname, UserRole role) {
         this.email = email.toLowerCase();
         this.password = password;
+        this.role = role;
         this.setFirstname(firstname);
         this.setLastname(lastname);
         this.setAvatarUrl(this.getDefaultAvatarUrl());
         this.createdAt = OffsetDateTime.now();
     }
+
+    /**
+     * Default user role is USER
+     */
+    public User(String email, String password, String firstname, String lastname) {
+        this(email, password, firstname, lastname, UserRole.USER);    
+    }
+    
 
     public String getAvatarUrl() {
         return avatarUrl;
@@ -96,7 +111,10 @@ public class User implements UserDetails {
         }
         this.lastname = lastname;
     }
-    
+
+    public UserRole getRole() {
+        return role;
+    }
 
     public UUID getUserId() {
         return userId;
@@ -105,7 +123,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(
+                new SimpleGrantedAuthority(this.role.name())
+        );
     }
 
     @Override
