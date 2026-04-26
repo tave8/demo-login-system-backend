@@ -5,6 +5,7 @@ import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.InvalidUUIDStringException;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.exceptions.UnauthorizedException;
+import giuseppetavella.demo_login_system.helpers.StringHelper;
 import giuseppetavella.demo_login_system.payloads.in_request.NewArticleSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.UpdatedArticleSentDTO;
 import giuseppetavella.demo_login_system.repositories.ArticlesRepository;
@@ -42,6 +43,10 @@ public class ArticlesService {
         return articlesRepository.findById(articleId).orElseThrow(() -> new NotFoundException(articleId, "article"));
     }
 
+    public Article findById(String articleIdAsStr) throws NotFoundException, InvalidUUIDStringException {
+        return this.findById(StringHelper.parseUUID(articleIdAsStr));
+    }
+
     /**
      * Find my article by ID.
      * The owner of the article must match the given user.
@@ -60,13 +65,7 @@ public class ArticlesService {
                                                                                        UnauthorizedException, 
                                                                                         InvalidUUIDStringException 
     {
-        UUID articleId;
-        try {
-            articleId = UUID.fromString(articleIdAsStr);
-        } catch(IllegalArgumentException ex) {
-            throw new InvalidUUIDStringException(articleIdAsStr);
-        }
-        return this.findOwnArticleById(articleId, articleOwner);
+        return this.findOwnArticleById(StringHelper.parseUUID(articleIdAsStr), articleOwner);
     }
 
 
@@ -121,6 +120,15 @@ public class ArticlesService {
         return this.articlesRepository.save(article);
     }
 
+    public Article updateOwnArticleById(String articleIdAsStr, 
+                                        UpdatedArticleSentDTO articleBody,
+                                        User articleOwner) throws NotFoundException, 
+                                                                    UnauthorizedException, 
+                                                                    InvalidUUIDStringException
+    {
+        return this.updateOwnArticleById(StringHelper.parseUUID(articleIdAsStr), articleBody, articleOwner);
+    }
+
 
     /**
      * Delete my article, given the ID.
@@ -131,6 +139,14 @@ public class ArticlesService {
     {
         Article article = this.findOwnArticleById(articleId, articleOwner);
         this.articlesRepository.delete(article);
+    }
+
+    public void deleteOwnArticleById(String articleIdAsStr,
+                                     User articleOwner) throws NotFoundException, 
+                                                                UnauthorizedException,
+                                                                InvalidUUIDStringException
+    {
+        this.deleteOwnArticleById(StringHelper.parseUUID(articleIdAsStr), articleOwner);
     }
     
 }

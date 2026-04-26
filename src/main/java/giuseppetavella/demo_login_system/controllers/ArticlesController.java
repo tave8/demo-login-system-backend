@@ -13,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/articles")
@@ -66,7 +65,7 @@ public class ArticlesController {
      */
     @PutMapping("/{articleId}")
     public ArticleToSendDTO updateOwnArticleById(@AuthenticationPrincipal User currentUser,
-                                                 @PathVariable UUID articleId,
+                                                 @PathVariable String articleId,
                                                  @RequestBody @Validated UpdatedArticleSentDTO body)
     {
         return new ArticleToSendDTO(
@@ -80,7 +79,7 @@ public class ArticlesController {
     @DeleteMapping("/{articleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOwnArticleById(@AuthenticationPrincipal User currentUser,
-                                                 @PathVariable UUID articleId)
+                                                 @PathVariable String articleId)
     {
         this.articlesService.deleteOwnArticleById(articleId, currentUser);
     }
