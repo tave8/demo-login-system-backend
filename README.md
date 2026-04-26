@@ -9,8 +9,9 @@
     POST /register  (create new profile/account)
 
 /users
-    GET /me        (get my profile)
-    PUT /me         (update my profile)
+    GET /me               (get my profile)
+    PUT /me                (update my profile)
+    POST /me/avatar-image     (upload my new avatar image)
     
 /articles
     GET /                  (get my articles)
@@ -98,6 +99,29 @@ lastname: str
 avatarUrl: str
 createdAt: timestamp
 ```
+
+### POST /me/avatar-image
+
+
+Request 
+
+Multipart/form-data
+
+```
+avatar_image
+```
+
+Response
+
+```
+userId: str
+email: str 
+firstname: str
+lastname: str
+avatarUrl: str
+createdAt: timestamp
+```
+
 
 ## /articles
 

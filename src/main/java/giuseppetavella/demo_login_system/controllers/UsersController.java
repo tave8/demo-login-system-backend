@@ -7,9 +7,11 @@ import giuseppetavella.demo_login_system.payloads.in_response.ArticleToSendDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.ProfileToSendDTO;
 import giuseppetavella.demo_login_system.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -43,6 +45,18 @@ public class UsersController {
                 this.usersService.updateOwnProfile(currentUser, body)
         );
     }
-    
+
+    /**
+     * Upload my new avatar image.
+     */
+    @PostMapping("/me/avatar-image")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProfileToSendDTO uploadMyAvatarImage(@AuthenticationPrincipal User currentUser,
+                                                @RequestParam("avatar_image") MultipartFile avatarImage)
+    {
+        return new ProfileToSendDTO(
+                this.usersService.uploadMyAvatarImage(currentUser, avatarImage)
+        );
+    }
     
 }

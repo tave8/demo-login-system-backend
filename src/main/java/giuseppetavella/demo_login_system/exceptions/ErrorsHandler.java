@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestControllerAdvice
 public class ErrorsHandler {
@@ -35,7 +33,20 @@ public class ErrorsHandler {
         return new ErrorsToSendDTO(ex.getMessage());
     }
 
+    
+    @ExceptionHandler(FileUploadException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorsToSendDTO handleFileUpload(FileUploadException ex) {
+        return new ErrorsToSendDTO(ex.getMessage());
+    }
 
+    
+    @ExceptionHandler(InvalidFileUploadedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsToSendDTO handleInvalidFileUploaded(InvalidFileUploadedException ex) {
+        return new ErrorsToSendDTO(ex.getMessage());
+    }
+    
     /**
      * Handles exceptions raised when current user of request
      * is not authorized to access an endpoint. We protect
@@ -129,6 +140,13 @@ public class ErrorsHandler {
                 +"i campi del body non sono ben formati, o qualche valore categorico non viene soddisfatto (ENUM)?";
         return new ErrorsToSendDTO(msg);
     }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsToSendDTO handleMaxUploadSizeExceeded(MaxUploadSizeExceededException ex) {
+        String msg = "File size exceeds server file size upload limit.";
+        return new ErrorsToSendDTO(msg);
+    } 
 
     @ExceptionHandler(MultipartException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
