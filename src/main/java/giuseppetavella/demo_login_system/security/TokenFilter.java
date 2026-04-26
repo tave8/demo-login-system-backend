@@ -3,6 +3,7 @@ package giuseppetavella.demo_login_system.security;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.exceptions.UnauthorizedException;
+import giuseppetavella.demo_login_system.payloads.in_response.ErrorsToSendDTO;
 import giuseppetavella.demo_login_system.services.UsersService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -30,27 +32,68 @@ public class TokenFilter extends OncePerRequestFilter {
     @Autowired
     private UsersService usersService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
+    /**
+     * Send an Unauthorized error response.
+     */
+    private void sendUnauthorizedErrorResponse(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(401);
+        response.setContentType("application/json");
+
+        ErrorsToSendDTO error = new ErrorsToSendDTO(message);
+        response.getWriter().write(objectMapper.writeValueAsString(error));
+    }
+
+    /**
+     * NOTE: 
+     * You should take care of standardizing the exceptions thrown at this level
+     * (Security Filter Chain) with those thrown at the Controller level.
+     *      
+     * here we are in the Security Filter Chain layer, and 
+     * we do not have access to the Spring exception catching abstraction.
+     * Therefore we need to must build our error responses manually,
+     * ideally using the same JSON class, and therefore the same JSON response,
+     * that we use inside the exceptions that are thrown in the controllers.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException, UnauthorizedException
     {
 
-        // verify that header contains token etc.
+        // verify that header contains access token
         String authHeader = request.getHeader("Authorization");
-        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
-
-            response.sendError(401, "Token is missing in authorization header, or it's not in the right format.");
+        
+        boolean authHeaderNotExists = authHeader == null;
+        
+        // authorization header does not exist
+        if(authHeaderNotExists) {
+            this.sendUnauthorizedErrorResponse(response,"Missing Authorization header. The requested resource was defined "
+                                                                 +"to require user authentication expressed "
+                                                                 +"through the Authorization header in the request, however "
+                                                                 +"no such header was found. Therefore this resource cannot be accessed."
+                                                                  +"Either this resource should not be protected, "
+                                                                    +"or the Authorization header is missing.");
             return;
-            // throwing exceptions in the security filter 
-            // does have the expected behavior, meaning that
-            // the exception does not get caught by 
-            // an exception handler
-            // throw new UnauthorizedException("Manca il token nell'authorization header, o non è nel formato corretto.");
         }
-
-
+        
+        boolean tokenNotExists = !authHeader.startsWith("Bearer ");
+        
+        // access token does not exist
+        if(tokenNotExists) {
+            this.sendUnauthorizedErrorResponse(response,"Missing access token in Authorization header. "
+                                                                +"The requested resource was defined to require user authentication expressed "
+                                                                    +"through the Authorization header in the request, however "
+                                                                    +"the access token was not found in such header. Therefore this resource "
+                                                                    +"cannot be accessed."
+                                                                    +"Either this resource should not be protected, or the access token is missing."
+                                                                    +"Make sure that the access token is in Authorization header with "
+                                                                    +"exactly this format 'Bearer mytoken'");
+            return;
+        }
+        
 
         // we get the token
         String accessToken = authHeader.replace("Bearer ", "");
@@ -61,7 +104,8 @@ public class TokenFilter extends OncePerRequestFilter {
             tokenTools.verifyToken(accessToken);
 
         } catch(UnauthorizedException ex) {
-            response.sendError(401, "Invalid token.");
+            this.sendUnauthorizedErrorResponse(response,"Access token is expired, malformed or has been tampered with. "
+                                                                 +"The user should try to do a new login, and see if that solves the problem.");
             return;
         }
 
@@ -77,7 +121,9 @@ public class TokenFilter extends OncePerRequestFilter {
         try {
             currentUser = this.usersService.findById(userId);
         } catch (NotFoundException ex) {
-            response.sendError(401, "Token was valid but the user associated to it no longer exists.");
+            this.sendUnauthorizedErrorResponse(response,"Access token was valid but "
+                                                                +"the user associated to it no longer exists. User ID was: '"
+                                                                + userId + "'. Maybe the user was deleted?");
             return;
         }
 

@@ -1,18 +1,18 @@
 package giuseppetavella.demo_login_system.payloads.in_response;
 
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ErrorsToSendDTO {
 
     private final String message;
-    private final LocalDateTime timestamp;
+    private final OffsetDateTime timestamp;
     private final List<String> errors;
 
     public ErrorsToSendDTO(String message,
-                              LocalDateTime timestamp,
+                           OffsetDateTime timestamp,
                               List<String> errors)
     {
         this.message = message;
@@ -23,11 +23,11 @@ public class ErrorsToSendDTO {
     public ErrorsToSendDTO(String message,
                               List<String> errors)
     {
-        this(message, LocalDateTime.now(), errors);
+        this(message, OffsetDateTime.now(), errors);
     }
 
     public ErrorsToSendDTO(String message,
-                              LocalDateTime timestamp)
+                           OffsetDateTime timestamp)
     {
         this(message, timestamp, new ArrayList<>());
     }
@@ -35,14 +35,14 @@ public class ErrorsToSendDTO {
 
     public ErrorsToSendDTO(String message)
     {
-        this(message, LocalDateTime.now(), new ArrayList<>());
+        this(message, OffsetDateTime.now(), new ArrayList<>());
     }
 
     public String getMessage() {
         return message;
     }
 
-    public LocalDateTime getTimestamp() {
+    public OffsetDateTime getTimestamp() {
         return timestamp;
     }
 
