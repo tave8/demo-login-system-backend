@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Send emails.
+ * Hides the email API library-specific implementation details.
  */
 @Service
 public class EmailService {
