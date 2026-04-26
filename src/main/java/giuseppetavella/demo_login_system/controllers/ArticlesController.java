@@ -53,7 +53,7 @@ public class ArticlesController {
      */
     @GetMapping("/{articleId}")
     public ArticleToSendDTO findOwnArticleById(@AuthenticationPrincipal User currentUser, 
-                                                     @PathVariable UUID articleId)
+                                                     @PathVariable String articleId)
     {
         return new ArticleToSendDTO(    
                 this.articlesService.findOwnArticleById(articleId, currentUser)

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(UUID itemId) {
-        super("The item with ID " + itemId + " has not been found.");
+        super("The item with ID '" + itemId + "' has not been found.");
     }
     
 

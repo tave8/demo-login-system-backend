@@ -2,6 +2,7 @@ package giuseppetavella.demo_login_system.services;
 
 import giuseppetavella.demo_login_system.entities.Article;
 import giuseppetavella.demo_login_system.entities.User;
+import giuseppetavella.demo_login_system.exceptions.InvalidUUIDStringException;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.exceptions.UnauthorizedException;
 import giuseppetavella.demo_login_system.payloads.in_request.NewArticleSentDTO;
@@ -45,12 +46,27 @@ public class ArticlesService {
      * Find my article by ID.
      * The owner of the article must match the given user.
      */
-    public Article findOwnArticleById(UUID articleId, User articleOwner) throws NotFoundException, UnauthorizedException {
+    public Article findOwnArticleById(UUID articleId, User articleOwner) throws NotFoundException, 
+                                                                                UnauthorizedException 
+    {
         Article article = this.findById(articleId);
         if(!this.isMyArticle(articleOwner, article.getUser())) {
             throw new UnauthorizedException("This is not your article.");
         }
         return article;
+    }
+    
+    public Article findOwnArticleById(String articleIdAsStr, User articleOwner) throws NotFoundException, 
+                                                                                       UnauthorizedException, 
+                                                                                        InvalidUUIDStringException 
+    {
+        UUID articleId;
+        try {
+            articleId = UUID.fromString(articleIdAsStr);
+        } catch(IllegalArgumentException ex) {
+            throw new InvalidUUIDStringException(articleIdAsStr);
+        }
+        return this.findOwnArticleById(articleId, articleOwner);
     }
 
 
