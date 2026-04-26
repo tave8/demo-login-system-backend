@@ -21,23 +21,14 @@ public class EmailService {
     private CreateEmailOptions.Builder defaultParams;
 
     /**
-     * Send an email.
+     * Send an email with the default sender name, user and domain.
+     * 
+     * @throws EmailSendingException if any problem occurred during email sending
      */
     public String sendEmail(String recipient, String subject, String html) throws EmailSendingException {
 
-        // CreateEmailOptions params = this.defaultParams
-        //         .to(recipient)
-        //         .subject(subject)
-        //         .html(html)
-        //         .build();
-
-        CreateEmailOptions params = CreateEmailOptions.builder()
-                .from("Giuseppe Tavella <info@mail.giuseppetavella.com>")
-                .to("giuseppetavella8@gmail.com")
-                .subject("it works!")
-                .html("<strong>hello world</strong>")
-                .build();
-
+        CreateEmailOptions params = this.buildEmailParams(recipient, subject, html);
+        
         try {
             CreateEmailResponse data = resend.emails().send(params);
             return data.getId();
@@ -46,5 +37,18 @@ public class EmailService {
             throw new EmailSendingException(e.getMessage());
         }
     }
+
+
+    /**
+     * Build the email params.
+     */
+    public CreateEmailOptions buildEmailParams(String recipient, String subject, String html) {
+        return this.defaultParams
+                .to(recipient)
+                .subject(subject)
+                .html(html)
+                .build();
+    }
     
+
 }

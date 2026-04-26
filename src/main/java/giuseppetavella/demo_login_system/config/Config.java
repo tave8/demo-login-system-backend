@@ -27,7 +27,10 @@ public class Config {
         config.put("api_secret", apiSecret);
         return new Cloudinary(config);
     }
-    
+
+    /**
+     * The instance will be using to send emails.
+     */
     @Bean 
     public Resend getEmailSender(
                 @Value("${resend.apikey}") String resendApiKey) 
@@ -35,6 +38,10 @@ public class Config {
         return new Resend(resendApiKey);    
     }
 
+    /**
+     * Default params for sending an email.
+     * For example, a default domain, user and name.
+     */
     @Bean
     public CreateEmailOptions.Builder getEmailSenderOptions(
             @Value("${email.sender-domain}") String domain,

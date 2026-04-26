@@ -15,8 +15,9 @@ public class EmailTestRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         
-        this.emailService.sendEmail("giuseppetavella8@gmail.com", "title!", "<i>whatsup</i>");
-        
+        String emailID = this.emailService.sendEmail("giuseppetavella8@gmail.com", "title!", "<i>whatsup</i>");
+
+        // System.out.println(emailID);
     }
     
 }
