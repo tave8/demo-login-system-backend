@@ -3,7 +3,7 @@ package giuseppetavella.demo_login_system.entities;
 import giuseppetavella.demo_login_system.exceptions.InvalidDataException;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -28,7 +28,7 @@ public class Article {
     private String coverUrl;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     
     protected Article() {}
     
@@ -37,7 +37,7 @@ public class Article {
         this.setTitle(title);
         this.setContent(content);
         this.setCoverUrl("");
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = OffsetDateTime.now();
     }
 
     public UUID getArticleId() {
@@ -81,7 +81,7 @@ public class Article {
         this.coverUrl = coverUrl;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
     

@@ -2,7 +2,7 @@ package giuseppetavella.demo_login_system.payloads.in_response;
 
 import giuseppetavella.demo_login_system.entities.Article;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class ArticleToSendDTO {
@@ -11,7 +11,7 @@ public class ArticleToSendDTO {
     private final String title;
     private final String content;
     private final String coverUrl;
-    private final LocalDateTime createdAt;
+    private final OffsetDateTime createdAt;
     
     public ArticleToSendDTO(Article article) {
         this.articleId = article.getArticleId();
@@ -33,7 +33,7 @@ public class ArticleToSendDTO {
         return content;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 

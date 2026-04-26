@@ -2,7 +2,7 @@ package giuseppetavella.demo_login_system.payloads.in_response;
 
 import giuseppetavella.demo_login_system.entities.User;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class ProfileToSendDTO {
@@ -12,7 +12,7 @@ public class ProfileToSendDTO {
     private final String firstname;
     private final String lastname;
     private final String avatarUrl;
-    private final LocalDateTime createdAt;
+    private final OffsetDateTime createdAt;
     
     public ProfileToSendDTO(User user) {
         this.userId = user.getUserId();
@@ -27,7 +27,7 @@ public class ProfileToSendDTO {
         return avatarUrl;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 

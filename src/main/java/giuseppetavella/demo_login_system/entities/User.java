@@ -7,7 +7,7 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +40,7 @@ public class User implements UserDetails {
     private String avatarUrl;
     
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     
     protected User() {}
     
@@ -50,7 +50,7 @@ public class User implements UserDetails {
         this.setFirstname(firstname);
         this.setLastname(lastname);
         this.setAvatarUrl(this.getDefaultAvatarUrl());
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = OffsetDateTime.now();
     }
 
     public String getAvatarUrl() {
@@ -66,7 +66,7 @@ public class User implements UserDetails {
         return "https://ui-avatars.com/api/?name=" + fullname;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
     
