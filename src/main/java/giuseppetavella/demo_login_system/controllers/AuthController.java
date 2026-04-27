@@ -50,10 +50,8 @@ public class AuthController {
             List<String> errors = validation.getFieldErrors().stream().map(error -> error.getDefaultMessage()).toList();
             throw new PayloadValidationException(errors);
         }
-
-        User newUser = this.usersService.addUser(body);
-
-        return new AfterRegistrationDTO(newUser);
+        
+        return this.authService.signup(body);
 
     }
 

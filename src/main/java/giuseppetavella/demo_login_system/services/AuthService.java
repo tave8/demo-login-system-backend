@@ -6,7 +6,9 @@ import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.exceptions.UnauthorizedException;
 import giuseppetavella.demo_login_system.payloads.in_request.LoginSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterLoginDTO;
+import giuseppetavella.demo_login_system.payloads.in_response.AfterRegistrationDTO;
 import giuseppetavella.demo_login_system.repositories.EmailVerificationRepository;
 import giuseppetavella.demo_login_system.security.TokenTools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +85,7 @@ public class AuthService {
         // user has not verified their email
         if(!userFound.isVerifiedEmail()) {
             
-            String verificationUrl = this.generateEmailVerificationUrl(userFound);
+            String verificationUrl = this.generateNewEmailVerificationUrl(userFound);
             this.appEmailService.sendVerifyEmail(userFound, verificationUrl);
             
             // System.out.println("USER HAS NOT VERIFIED THEIR EMAIL");
@@ -98,11 +100,29 @@ public class AuthService {
 
 
     /**
-     * Generate an email verification URL.
-     * 
-     * 
+     * Register/sign up a user.
      */
-    public String generateEmailVerificationUrl(User user) {
+    public AfterRegistrationDTO signup(RegistrationSentDTO body) {
+        
+        // add a user to DB
+        User newUser = this.usersService.addUser(body);
+
+        // send email verification code to this user
+        String verificationUrl = this.generateNewEmailVerificationUrl(newUser);
+        
+        // sends email
+        this.appEmailService.sendVerifyEmail(newUser, verificationUrl);
+        
+        return new AfterRegistrationDTO(newUser);
+    }
+
+
+    /**
+     * Generate a new email verification URL.
+     * This includes adding a new email verification code in DB,
+     * associated to the given user.
+     */
+    public String generateNewEmailVerificationUrl(User user) {
         String code = this.addEmailVerificationCode(user).toString();
         // which domain should be in the verification url?
         // the domain from which the email was sent?
