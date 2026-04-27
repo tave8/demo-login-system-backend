@@ -48,7 +48,7 @@ public class ErrorsHandler {
     }
 
     @ExceptionHandler(EmailVerificationException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorsToSendDTO handleEmailVerification(EmailVerificationException ex) {
         return new ErrorsToSendDTO(ex.getMessage());
     }

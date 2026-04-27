@@ -29,13 +29,19 @@ public class AuthController {
     private UsersService usersService;
 
 
+    /**
+     * Login a user.
+     */
     @PostMapping("/login")
     public AfterLoginDTO login(@RequestBody @Validated LoginSentDTO body) {
         String accessToken = authService.checkCredentialsAndGenerateToken(body);
         return new AfterLoginDTO(accessToken);
     }
 
-    
+
+    /**
+     * Sign up a user.
+     */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public AfterRegistrationDTO register(@RequestBody @Validated RegistrationSentDTO body,
@@ -51,5 +57,12 @@ public class AuthController {
         return new AfterRegistrationDTO(newUser);
 
     }
+
+
+    /**
+     * 
+     */
+    // @GetMapping("/verify-email")
+    
 
 }

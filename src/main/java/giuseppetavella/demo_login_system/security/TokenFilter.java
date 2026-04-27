@@ -1,6 +1,7 @@
 package giuseppetavella.demo_login_system.security;
 
 import giuseppetavella.demo_login_system.entities.User;
+import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.exceptions.UnauthorizedException;
 import giuseppetavella.demo_login_system.payloads.in_response.ErrorsToSendDTO;
@@ -10,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,7 @@ import java.util.UUID;
 
 
 @Component
+@Order(1)
 public class TokenFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -63,13 +66,67 @@ public class TokenFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException, UnauthorizedException
     {
 
+        AntPathMatcher matcher = new AntPathMatcher();
+        String path = request.getServletPath();
+        
+        boolean isRoot = matcher.match("/", path);
+        boolean isAuthPath = matcher.match("/auth/**", path);
+        
+        // there are no controls on root endpoint
+        if(isRoot) {
+            // System.out.println("this is the / path");
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        // *************************
+        // THIS IS AN ENDPOINT ON /auth/**
+        // *************************
+        
+        if(isAuthPath) {
+            // System.out.println("this is an /auth/** path");
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // System.out.println("this is NOT an /auth/** path");
+        
+        
+        // *************************
+        // IF THE USER IS TRYING TO SIGN UP
+        // *************************
+
+
+            // *************************
+            // 
+            // *************************
+        
+
+
+        // *************************
+        // IF THE USER IS TRYING TO LOGIN
+        // *************************
+
+
+                // *************************
+                // USER HAS NOT VERIFIED THEIR EMAIL
+                // *************************
+
+
+        
         // verify that header contains access token
         String authHeader = request.getHeader("Authorization");
         
         boolean authHeaderNotExists = authHeader == null;
+
+
+        // *************************
+        // AUTHORIZATION HEADER DOES NOT EXIST
+        // *************************
+        
         
         // authorization header does not exist
         if(authHeaderNotExists) {
+            
             this.sendUnauthorizedErrorResponse(response,"Missing Authorization header. The requested resource was defined "
                                                                  +"to require user authentication expressed "
                                                                  +"through the Authorization header in the request, however "
@@ -79,7 +136,13 @@ public class TokenFilter extends OncePerRequestFilter {
             return;
         }
         
+        
         boolean tokenNotExists = !authHeader.startsWith("Bearer ");
+
+
+        // *************************
+        // ACCESS TOKEN DOES NOT EXIST
+        // *************************
         
         // access token does not exist
         if(tokenNotExists) {
@@ -98,6 +161,11 @@ public class TokenFilter extends OncePerRequestFilter {
         // we get the token
         String accessToken = authHeader.replace("Bearer ", "");
 
+
+        // *************************
+        // ACCESS TOKEN IS NOT VALID/IS EXPIRED
+        // *************************
+        
         // if token verification fails
         try {
             // verify that token is valid etc.
@@ -108,22 +176,35 @@ public class TokenFilter extends OncePerRequestFilter {
                                                                  +"The user should try to do a new login, and see if that solves the problem.");
             return;
         }
+        
 
-
-        // ******** AUTHORIZATION ************
-
-        // 1. extract user's ID from token
         UUID userId = this.tokenTools.extractIdFromToken(accessToken);
 
         User currentUser;
 
-        // 2. find user in DB
+        // *************************
+        // USER ASSOCIATED WITH TOKEN DOES NOT EXIST
+        // *************************
+
         try {
             currentUser = this.usersService.findById(userId);
         } catch (NotFoundException ex) {
             this.sendUnauthorizedErrorResponse(response,"Access token was valid but "
                                                                 +"the user associated to it no longer exists. User ID was: '"
                                                                 + userId + "'. Maybe the user was deleted?");
+            return;
+        }
+
+
+        // *************************
+        // USER HAS NOT VERIFIED THEIR EMAIL
+        // *************************
+        
+        // if user has not verified their email,
+        if(!currentUser.isVerifiedEmail()) {
+            this.sendUnauthorizedErrorResponse(response, "The user with ID '" 
+                                                            + currentUser.getUserId() 
+                                                            + "' has not verified their email.");
             return;
         }
 
@@ -134,6 +215,7 @@ public class TokenFilter extends OncePerRequestFilter {
 
         // System.out.println("do filter internal called!");
 
+        
         filterChain.doFilter(request, response);
 
     }
@@ -143,19 +225,28 @@ public class TokenFilter extends OncePerRequestFilter {
     // for example the paths starting with /auth   
 
     /**
+     * Disable this security filter for endpoints that:
+     * - start with /auth
+     * - is / (root)
+     * 
+     * 
      * In this method we specify in which cases
      * our security filter should not be called.
      * For example, we might want to disable this security filter
      * for all endpoints starting with /auth
      */
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        AntPathMatcher matcher = new AntPathMatcher();
-        String path = request.getServletPath();
+    // protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    //     AntPathMatcher matcher = new AntPathMatcher();
+    //     String path = request.getServletPath();
+    //
+    //     // the /auth/** endpoint is excluded from the filter
+    //     // boolean isAuthPath = matcher.match("/auth/**", path);
+    //     // the / endpoint is excluded from the filter
+    //     boolean isRoot = matcher.match("/", path);
+    //    
+    //     return isRoot;
+    // }
+    
 
-        boolean isAuthPath = matcher.match("/auth/**", path);
-        boolean isRoot = matcher.match("/", path);
-        
-        return isAuthPath || isRoot;
-    }
 
 }
