@@ -25,10 +25,14 @@ public class EmailTestRunner implements CommandLineRunner {
         // System.out.println(emailID);
         
         // User user = new User(
-        //         ""
+        //         "hunjsnajnsajkdna3923njnkjdnjkwendkjwnejkd@gmail.com",
+        //         "1234",
+        //         "Giuseppe",
+        //         "Tavella"
         // );
+        //
+        // appEmailService.sendVerifyEmail(user);
         
-        // appEmailService.sendWelcome();
     }
     
 }

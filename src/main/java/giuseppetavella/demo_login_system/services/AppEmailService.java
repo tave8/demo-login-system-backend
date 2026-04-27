@@ -36,13 +36,15 @@ public class AppEmailService extends EmailService {
      * Send verify your account email.
      * Should be sent only after signup.
      */
-    public void sendVerifyEmail() {
+    public void sendVerifyEmail(User user, String verificationUrl) {
+        
         Context context = new Context();
-        context.setVariable("firstname", "Giuseppe");
+        context.setVariable("firstname", user.getFirstname());
+        context.setVariable("verificationUrl", verificationUrl);
 
-        String htmlBody = templateEngine.process("emails/signup", context);
+        String htmlBody = templateEngine.process("emails/verify_email", context);
 
-        this.sendEmail("giuseppetavella8@gmail.com", "Welcome!", htmlBody);
+        this.sendEmail(user.getEmail(), "Verify your email", htmlBody);
     }
     
 }

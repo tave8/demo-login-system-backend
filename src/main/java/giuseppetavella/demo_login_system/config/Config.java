@@ -15,6 +15,15 @@ import java.util.Map;
 @PropertySource("application.properties")
 public class Config {
 
+    /**
+     * The URL of this server.
+     */
+    @Bean(name = "serverUrl")
+    public String getServerUrl(@Value("${server.url}") String serverUrl) {
+        return serverUrl;
+    }
+    
+    
     @Bean
     public Cloudinary getFileUploader(
             @Value("${cloudinary.name}") String cloudName,

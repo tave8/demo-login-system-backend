@@ -1,16 +1,22 @@
 package giuseppetavella.demo_login_system.services;
 
+import giuseppetavella.demo_login_system.entities.EmailVerificationCode;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.exceptions.UnauthorizedException;
 import giuseppetavella.demo_login_system.payloads.in_request.LoginSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterLoginDTO;
+import giuseppetavella.demo_login_system.repositories.EmailVerificationRepository;
 import giuseppetavella.demo_login_system.security.TokenTools;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -23,10 +29,23 @@ public class AuthService {
     
     @Autowired
     private AppEmailService appEmailService;
+    
+    @Autowired
+    private EmailVerificationRepository emailVerificationRepository;
 
     @Autowired
     private PasswordEncoder bcrypt;
 
+    // a bean
+    private final String serverUrl;
+    
+    public AuthService(
+                @Qualifier("serverUrl") String serverUrl) 
+    {
+        this.serverUrl = serverUrl;
+    }
+    
+    
     /**
      *  Call this only when the user is trying to login.
      *      * The user can proceed with the login, only if the account 
@@ -63,7 +82,10 @@ public class AuthService {
         
         // user has not verified their email
         if(!userFound.isVerifiedEmail()) {
-            // this.appEmailService.sendVerifyEmail();
+            
+            String verificationUrl = this.generateEmailVerificationUrl(userFound);
+            this.appEmailService.sendVerifyEmail(userFound, verificationUrl);
+            
             // System.out.println("USER HAS NOT VERIFIED THEIR EMAIL");
             throw new EmailVerificationException("User can login only after verifying their email. "
                                                 +"An email has been sent with a new verification link.");
@@ -72,6 +94,40 @@ public class AuthService {
         
         return new AfterLoginDTO(accessToken);
         
+    }
+
+
+    /**
+     * Generate an email verification URL.
+     * 
+     * 
+     */
+    public String generateEmailVerificationUrl(User user) {
+        String code = this.addEmailVerificationCode(user).toString();
+        // which domain should be in the verification url?
+        // the domain from which the email was sent?
+        // so the domain on which domain this server is running?
+        return this.buildEmailVerificationUrl(code);
+    }
+
+
+    /**
+     * Add an email verification code for the given user.
+     */
+    private UUID addEmailVerificationCode(User user) {
+        EmailVerificationCode code = new EmailVerificationCode(user);
+        EmailVerificationCode codeFromDB = this.emailVerificationRepository.save(code);
+        return codeFromDB.getCode();
+    }
+
+    /**
+     * Build the email verification url from the verification code.
+     * This will be the clickable link shown in the email.
+     * The endpoint at this URL will then be called to verify this code.
+     */
+    private String buildEmailVerificationUrl(String code) {
+        String path = "/auth/verify-email/" + code;
+        return this.serverUrl + path;
     }
     
     
