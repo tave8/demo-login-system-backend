@@ -34,8 +34,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     public AfterLoginDTO login(@RequestBody @Validated LoginSentDTO body) {
-        String accessToken = authService.checkCredentialsAndGenerateToken(body);
-        return new AfterLoginDTO(accessToken);
+        return authService.login(body);
     }
 
 

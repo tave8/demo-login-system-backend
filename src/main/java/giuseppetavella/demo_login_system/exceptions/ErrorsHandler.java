@@ -48,7 +48,7 @@ public class ErrorsHandler {
     }
 
     @ExceptionHandler(EmailVerificationException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorsToSendDTO handleEmailVerification(EmailVerificationException ex) {
         return new ErrorsToSendDTO(ex.getMessage());
     }

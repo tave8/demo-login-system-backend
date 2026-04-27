@@ -36,7 +36,7 @@ public class AppEmailService extends EmailService {
      * Send verify your account email.
      * Should be sent only after signup.
      */
-    public void sendVerifyAccount() {
+    public void sendVerifyEmail() {
         Context context = new Context();
         context.setVariable("firstname", "Giuseppe");
 

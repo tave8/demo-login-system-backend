@@ -38,16 +38,34 @@ public class TokenFilter extends OncePerRequestFilter {
     @Autowired
     private ObjectMapper objectMapper;
 
+
+
     /**
-     * Send an Unauthorized error response.
+     * Send an error response with custom status code.
      */
-    private void sendUnauthorizedErrorResponse(HttpServletResponse response, String message) throws IOException {
-        response.setStatus(401);
+    private void sendErrorResponse(HttpServletResponse response, String message, int statusCode) throws IOException {
+        response.setStatus(statusCode);
         response.setContentType("application/json");
 
         ErrorsToSendDTO error = new ErrorsToSendDTO(message);
         response.getWriter().write(objectMapper.writeValueAsString(error));
     }
+    
+    
+    /**
+     * Send an Unauthorized error response.
+     */
+    private void sendUnauthorizedErrorResponse(HttpServletResponse response, String message) throws IOException {
+        this.sendErrorResponse(response, message, 401);
+    }
+
+    /**
+     * Send a Forbidden error response.
+     */
+    private void sendForbiddenErrorResponse(HttpServletResponse response, String message) throws IOException {
+        this.sendErrorResponse(response, message, 403);
+    }
+
 
     /**
      * NOTE: 
@@ -71,6 +89,7 @@ public class TokenFilter extends OncePerRequestFilter {
         
         boolean isRoot = matcher.match("/", path);
         boolean isAuthPath = matcher.match("/auth/**", path);
+        boolean isLoginPath = matcher.match("/auth/login", path);
         
         // there are no controls on root endpoint
         if(isRoot) {
@@ -78,40 +97,30 @@ public class TokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        
-        // *************************
-        // THIS IS AN ENDPOINT ON /auth/**
-        // *************************
-        
-        if(isAuthPath) {
-            // System.out.println("this is an /auth/** path");
-            filterChain.doFilter(request, response);
-            return;
-        }
-        // System.out.println("this is NOT an /auth/** path");
-        
-        
-        // *************************
-        // IF THE USER IS TRYING TO SIGN UP
-        // *************************
-
-
-            // *************************
-            // 
-            // *************************
-        
 
 
         // *************************
         // IF THE USER IS TRYING TO LOGIN
         // *************************
-
-
-                // *************************
-                // USER HAS NOT VERIFIED THEIR EMAIL
-                // *************************
-
-
+        
+        if(isLoginPath) {
+            // System.out.println("TRYING TO LOGIN");
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        // *************************
+        // THIS IS AN AUTHENTICATION ENDPOINT
+        // *************************
+        
+        if(isAuthPath) {
+            // System.out.println("AUTHENTICATION ENDPOINT THAT IS NOT LOGIN");
+            // System.out.println("this is an /auth/** path");
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        // System.out.println("PATH PROTECTED BY LOGIN");
         
         // verify that header contains access token
         String authHeader = request.getHeader("Authorization");
@@ -202,7 +211,7 @@ public class TokenFilter extends OncePerRequestFilter {
         
         // if user has not verified their email,
         if(!currentUser.isVerifiedEmail()) {
-            this.sendUnauthorizedErrorResponse(response, "The user with ID '" 
+            this.sendForbiddenErrorResponse(response, "The user with ID '" 
                                                             + currentUser.getUserId() 
                                                             + "' has not verified their email.");
             return;
@@ -219,8 +228,7 @@ public class TokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
 
     }
-
-
+    
     // we can specify which paths not to filter,
     // for example the paths starting with /auth   
 
