@@ -5,8 +5,9 @@
 ```
 
 /auth
-    POST /login      (login)
-    POST /register  (create new profile/account)
+    POST /login                         (login)
+    POST /register                      (create new profile/account)
+    GET  /verify-email/:code            (mark the account with this email as verified)
 
 /users
     GET /me               (get my profile)

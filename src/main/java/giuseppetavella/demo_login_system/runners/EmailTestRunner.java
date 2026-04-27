@@ -28,7 +28,7 @@ public class EmailTestRunner implements CommandLineRunner {
         //         ""
         // );
         
-        appEmailService.sendWelcome();
+        // appEmailService.sendWelcome();
     }
     
 }

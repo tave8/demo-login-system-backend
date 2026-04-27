@@ -23,12 +23,25 @@ public class AppEmailService extends EmailService {
     /**
      * Send welcome email on signup.
      */
-    public void sendWelcome() {
+    // public void sendWelcome() {
+    //     Context context = new Context();
+    //     context.setVariable("firstname", "Giuseppe");
+    //
+    //     String htmlBody = templateEngine.process("emails/signup", context);
+    //    
+    //     this.sendEmail("giuseppetavella8@gmail.com", "Welcome!", htmlBody);
+    // }
+
+    /**
+     * Send verify your account email.
+     * Should be sent only after signup.
+     */
+    public void sendVerifyAccount() {
         Context context = new Context();
         context.setVariable("firstname", "Giuseppe");
 
         String htmlBody = templateEngine.process("emails/signup", context);
-        
+
         this.sendEmail("giuseppetavella8@gmail.com", "Welcome!", htmlBody);
     }
     

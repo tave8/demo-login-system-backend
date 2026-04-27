@@ -45,6 +45,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
     
+    @Column(nullable = false)
+    private boolean verifiedEmail;
+    
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
     
@@ -110,6 +113,14 @@ public class User implements UserDetails {
             throw new InvalidDataException("Lastname cannot be null.");
         }
         this.lastname = lastname;
+    }
+
+    public boolean isVerifiedEmail() {
+        return verifiedEmail;
+    }
+
+    public void setVerifiedEmail(boolean verifiedEmail) {
+        this.verifiedEmail = verifiedEmail;
     }
 
     public UserRole getRole() {
