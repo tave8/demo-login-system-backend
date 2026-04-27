@@ -2,6 +2,7 @@ package giuseppetavella.demo_login_system.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import giuseppetavella.demo_login_system.enums.UserRole;
+import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
 import giuseppetavella.demo_login_system.exceptions.InvalidDataException;
 import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
@@ -119,8 +120,20 @@ public class User implements UserDetails {
         return verifiedEmail;
     }
 
-    public void setVerifiedEmail(boolean verifiedEmail) {
-        this.verifiedEmail = verifiedEmail;
+    /**
+     * Mark this user/account as a verified email.
+     */
+    public void markAsVerifiedEmail() throws EmailVerificationException {
+        // you can only set the used state
+        // from false to true, and no other
+
+        // if the code was already used
+        if(this.isVerifiedEmail()) {
+            throw new EmailVerificationException("User email was already verified, "
+                                                +"therefore it cannot be marked as verified again.");
+        }
+
+        this.verifiedEmail = true;
     }
 
     public UserRole getRole() {

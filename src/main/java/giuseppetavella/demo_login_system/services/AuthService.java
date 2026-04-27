@@ -10,14 +10,17 @@ import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO
 import giuseppetavella.demo_login_system.payloads.in_response.AfterLoginDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterRegistrationDTO;
 import giuseppetavella.demo_login_system.repositories.EmailVerificationRepository;
+import giuseppetavella.demo_login_system.repositories.UsersRepository;
 import giuseppetavella.demo_login_system.security.TokenTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+
+import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,6 +43,10 @@ public class AuthService {
 
     // a bean
     private final String serverUrl;
+
+    // verification code time to live, in minutes
+    private static final long VERIFICATION_CODE_TTL = 30;
+    
     
     public AuthService(
                 @Qualifier("serverUrl") String serverUrl) 
@@ -115,6 +122,70 @@ public class AuthService {
         
         return new AfterRegistrationDTO(newUser);
     }
+
+
+    /**
+     * Verify if the code is valid, not expired, and was not used.
+     */
+    @Transactional
+    public void verifyEmailVerificationCode(String codeAsStr) throws EmailVerificationException 
+    {
+        UUID code;
+        
+        try {
+            
+            code = UUID.fromString(codeAsStr);
+            
+        } catch(IllegalArgumentException ex) {
+            // the code is not even a valid UUID
+            throw new EmailVerificationException("This code is not valid (error 1)");
+        }
+
+        OffsetDateTime validSince = OffsetDateTime.now().minusMinutes(VERIFICATION_CODE_TTL);
+        
+        Optional<EmailVerificationCode> maybeCodeFromDB = this.emailVerificationRepository.getCode(code, validSince);
+        
+        // the code is expired or was used
+        if(maybeCodeFromDB.isEmpty()) {
+            throw new EmailVerificationException("This code is not valid (error 2)");
+        }
+
+        // the code is valid
+        EmailVerificationCode codeFromDB = maybeCodeFromDB.get();
+        
+        User userFromDB;
+        
+        try {
+            userFromDB = this.usersService.findById(codeFromDB.getUser().getUserId());
+            
+        } catch(NotFoundException ex) {
+            throw new EmailVerificationException("While verifying email verification code, user was not found. "
+                                                    +"This should only happen if user was deleted after "
+                                                    +"the code was created. " + ex.getMessage());
+        }
+        
+        // user exists 
+
+        // mark the code as used
+        codeFromDB.markAsUsed();
+        
+        try {
+            
+            // mark the account that this code belongs to, with email verified
+            
+            // it is possible that the code was not used but 
+            // this verification link was clicked after the user has already 
+            // verified the code, so we must check it
+            userFromDB.markAsVerifiedEmail();
+            
+        } catch(EmailVerificationException ex) {
+            throw new EmailVerificationException("This code is not valid (error 3)");
+        }
+        
+        
+    }
+    
+
 
 
     /**

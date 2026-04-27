@@ -3,6 +3,7 @@ package giuseppetavella.demo_login_system.controllers;
 
 // import giuseppetavella.demo_login_system.services.AuthService;
 import giuseppetavella.demo_login_system.entities.User;
+import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
 import giuseppetavella.demo_login_system.exceptions.PayloadValidationException;
 import giuseppetavella.demo_login_system.payloads.in_request.LoginSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO;
@@ -57,9 +58,26 @@ public class AuthController {
 
 
     /**
+     * Verify if the code is valid.
+     * If yes, the email of the account associated with this code, 
+     * will be marked as verified.
      * 
+     * Returns a simple html page saying that email is now verified.
      */
-    // @GetMapping("/verify-email")
+    @GetMapping("/verify-email/{code}")
+    public String verifyEmail(@PathVariable String code) {
+        
+        try {
+            
+            this.authService.verifyEmailVerificationCode(code);
+            
+        } catch (EmailVerificationException ex) {
+            return ex.getMessage();
+        }
+        
+        
+        return "Your email was verified. Thank you. You may close this page and login.";
+    }
     
 
 }
