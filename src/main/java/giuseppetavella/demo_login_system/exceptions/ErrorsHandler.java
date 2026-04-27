@@ -46,6 +46,12 @@ public class ErrorsHandler {
     public ErrorsToSendDTO handleInvalidFileUploaded(InvalidFileUploadedException ex) {
         return new ErrorsToSendDTO(ex.getMessage());
     }
+
+    @ExceptionHandler(EmailVerificationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorsToSendDTO handleEmailVerification(EmailVerificationException ex) {
+        return new ErrorsToSendDTO(ex.getMessage());
+    }
     
     /**
      * Handles exceptions raised when current user of request
