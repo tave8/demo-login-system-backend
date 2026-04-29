@@ -52,6 +52,12 @@ public class ErrorsHandler {
     public ErrorsToSendDTO handleEmailVerification(EmailVerificationException ex) {
         return new ErrorsToSendDTO(ex.getMessage());
     }
+
+    @ExceptionHandler(ForgotPasswordVerificationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorsToSendDTO handleForgotPasswordVerification(ForgotPasswordVerificationException ex) {
+        return new ErrorsToSendDTO(ex.getMessage());
+    }
     
     /**
      * Handles exceptions raised when current user of request
