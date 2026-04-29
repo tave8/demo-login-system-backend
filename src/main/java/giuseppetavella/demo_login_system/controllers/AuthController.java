@@ -2,13 +2,13 @@ package giuseppetavella.demo_login_system.controllers;
 
 
 // import giuseppetavella.demo_login_system.services.AuthService;
-import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
 import giuseppetavella.demo_login_system.exceptions.PayloadValidationException;
 import giuseppetavella.demo_login_system.helpers.PayloadValidationHelper;
 import giuseppetavella.demo_login_system.payloads.in_request.LoginSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO;
-import giuseppetavella.demo_login_system.payloads.in_request.forgot_password.ForgotPasswordRequestDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.forgot_password.ForgotPasswordRequestWithEmailSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.forgot_password.VerifyForgotPasswordCodeSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterLoginDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterRegistrationDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.forgot_password.ForgotPasswordToSendDTO;
@@ -93,7 +93,7 @@ public class AuthController {
      * and eventually generates and emails a new code.
      */
     @PostMapping("/forgot-password/request")
-    public ForgotPasswordToSendDTO forgotPasswordRequest(@RequestBody @Validated ForgotPasswordRequestDTO body, 
+    public ForgotPasswordToSendDTO forgotPasswordRequest(@RequestBody @Validated ForgotPasswordRequestWithEmailSentDTO body, 
                                       BindingResult validation) 
     {
 
@@ -109,6 +109,32 @@ public class AuthController {
         return new ForgotPasswordToSendDTO(message);
 
     }
+
+
+    /**
+     * The frontend sends a request here, to verify 
+     * whether the user (associated with the input code) 
+     * can actually set new password on the "set new password" page. 
+     * Then we should mark this code as clicked or similar logic.
+     */
+    // @PostMapping("/forgot-password/verify")
+    // public ForgotPasswordToSendDTO verifyForgotPasswordAuthorization(@RequestBody @Validated VerifyForgotPasswordCodeSentDTO body,
+    //                                                                 BindingResult validation)
+    // {
+
+        // PayloadValidationHelper.requireNoErrors(validation);
+
+        // String email = body.email();
+        //
+        // this.forgotPasswordService.ifEmailIsAuthorized(email);
+        //
+        // String message = "We've just sent you an email with a unique authorization link. "
+        //         +"For your security, the link will expire soon and can only be used once.";
+        //
+        // return new ForgotPasswordToSendDTO(message);
+
+    // }
+
 
 
 }
