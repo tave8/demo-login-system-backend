@@ -185,9 +185,18 @@ public class TokenFilter extends OncePerRequestFilter {
                                                                  +"The user should try to do a new login, and see if that solves the problem.");
             return;
         }
-        
 
-        UUID userId = this.tokenTools.extractIdFromToken(accessToken);
+
+        UUID userId;
+
+        try {
+            // 1. extract user's ID from token
+            userId = this.tokenTools.extractIdFromToken(accessToken);
+
+        } catch(RuntimeException ex) {
+            this.sendUnauthorizedErrorResponse(response, "Access token is not valid (error 3).");
+            return;
+        }
 
         User currentUser;
 
