@@ -93,7 +93,7 @@ public class AuthController {
      * and eventually generates and emails a new code.
      */
     @PostMapping("/forgot-password/request")
-    public void forgotPasswordRequest(@RequestBody @Validated ForgotPasswordRequestDTO body, 
+    public ForgotPasswordToSendDTO forgotPasswordRequest(@RequestBody @Validated ForgotPasswordRequestDTO body, 
                                       BindingResult validation) 
     {
 
@@ -101,9 +101,13 @@ public class AuthController {
         
         String email = body.email();
         
-        // this.forgotPasswordService.ifEmailIsAuthorized(email);
+        this.forgotPasswordService.ifEmailIsAuthorized(email);
+        
+        String message = "We've just sent you an email with a unique authorization link. "
+                        +"For your security, the link will expire soon and can only be used once.";
+        
+        return new ForgotPasswordToSendDTO(message);
 
-        System.out.println(email);
     }
 
 

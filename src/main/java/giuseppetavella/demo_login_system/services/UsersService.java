@@ -50,10 +50,16 @@ public class UsersService {
      * Find a user by email.
      */
     public User findByEmail(String email) throws NotFoundException {
-        User userFound = this.usersRepository.findByEmail(email);
-        if (userFound == null) {
-            throw new NotFoundException("User with email " + email + " was not found.");
+        if(email == null) {
+            throw new NotFoundException("An email that was null was given.");
         }
+        
+        User userFound = this.usersRepository.findByEmail(email);
+        
+        if (userFound == null) {
+            throw new NotFoundException("User with email '" + email + "' was not found.");
+        }
+        
         return userFound;
     }
 

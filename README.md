@@ -8,6 +8,9 @@
     POST /login                         (login)
     POST /register                      (create new profile/account)
     GET  /verify-email/:code            (mark the account with this email as verified)
+    POST /forgot-password/request       (is this email authorized to set a new password?)
+    POST /forgot-password/verify/:code  (can this email set a new password right now?)
+    POST /forgot-password/reset         (set a new password right now)
 
 /users
     GET /me               (get my profile)
@@ -60,6 +63,73 @@ Response
 
 ```
 userId: str
+```
+
+
+### POST /forgot-password/request
+
+Can this email request to set a new password?
+
+Request
+
+```
+{
+    email: str
+}
+```
+
+Response
+
+```
+{
+    message: str
+}
+```
+
+### POST /forgot-password/verify
+
+Is this code authorized to set a new password?
+
+Request
+
+The code to verify. 
+
+```
+{
+    code: str
+}
+```
+
+Response
+
+```
+{
+    message: str
+}
+```
+
+### POST /forgot-password/reset
+
+Set a new password for the user associated with this code,
+if the code is still valid.
+
+Request
+
+The code to verify.
+
+```
+{
+    code: str
+    newPassword: str
+}
+```
+
+Response
+
+```
+{
+    message: str
+}
 ```
 
 
