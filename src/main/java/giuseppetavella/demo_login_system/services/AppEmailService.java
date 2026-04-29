@@ -46,5 +46,19 @@ public class AppEmailService extends EmailService {
 
         this.sendEmail(user.getEmail(), "Verify your email", htmlBody);
     }
+
+
+    /**
+     * Send forgot password authorization email.
+     */
+    public void sendForgotPasswordAuthorization(User user, String verificationUrl) {
+
+        Context context = new Context();
+        context.setVariable("verificationUrl", verificationUrl);
+
+        String htmlBody = templateEngine.process("emails/forgot_password_authorization", context);
+
+        this.sendEmail(user.getEmail(), "Reset your password", htmlBody);
+    }
     
 }

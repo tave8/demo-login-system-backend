@@ -68,14 +68,5 @@ public class EmailVerificationCode {
         return user;
     }
 
-
-    @Override
-    public String toString() {
-        return "EmailVerificationCode{" +
-                "code=" + code +
-                ", user=" + user +
-                ", used=" + used +
-                ", createdAt=" + createdAt +
-                '}';
-    }
+    
 }
