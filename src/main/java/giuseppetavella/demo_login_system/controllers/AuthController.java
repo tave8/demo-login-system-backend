@@ -5,11 +5,15 @@ package giuseppetavella.demo_login_system.controllers;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
 import giuseppetavella.demo_login_system.exceptions.PayloadValidationException;
+import giuseppetavella.demo_login_system.helpers.PayloadValidationHelper;
 import giuseppetavella.demo_login_system.payloads.in_request.LoginSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.forgot_password.ForgotPasswordRequestDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterLoginDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterRegistrationDTO;
+import giuseppetavella.demo_login_system.payloads.in_response.forgot_password.ForgotPasswordToSendDTO;
 import giuseppetavella.demo_login_system.services.AuthService;
+import giuseppetavella.demo_login_system.services.ForgotPasswordService;
 import giuseppetavella.demo_login_system.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +32,9 @@ public class AuthController {
     
     @Autowired
     private UsersService usersService;
+    
+    @Autowired
+    private ForgotPasswordService forgotPasswordService;
 
 
     /**
@@ -78,6 +85,26 @@ public class AuthController {
         
         return "Your email was verified. Thank you. You may close this page and login.";
     }
-    
+
+
+    /**
+     * Verify if user with this email is allowed to set a new password. 
+     * Checks if email exists, has been verified etc. 
+     * and eventually generates and emails a new code.
+     */
+    @PostMapping("/forgot-password/request")
+    public void forgotPasswordRequest(@RequestBody @Validated ForgotPasswordRequestDTO body, 
+                                      BindingResult validation) 
+    {
+
+        PayloadValidationHelper.requireNoErrors(validation);
+        
+        String email = body.email();
+        
+        // this.forgotPasswordService.ifEmailIsAuthorized(email);
+
+        System.out.println(email);
+    }
+
 
 }
