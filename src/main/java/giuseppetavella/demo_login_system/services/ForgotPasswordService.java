@@ -184,7 +184,7 @@ public class ForgotPasswordService {
     @Transactional
     public void setNewPasswordIfAuthorized(String newPassword, UUID codeId) {
 
-        // try {
+        try {
 
             // the code must exist
             ForgotPasswordCode code = this.findById(codeId);
@@ -214,22 +214,22 @@ public class ForgotPasswordService {
             // set new password
             this.usersRepository.setNewPassword(owner, hashedPassword);
 
-        // } catch(NotFoundException ex) {
-        //
-        //     // user with this email was not found     
-        //     throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 1)");
-        //
-        // } catch(EmailVerificationException ex) {
-        //
-        //     // email was not verified      
-        //     throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 2)");
-        //
-        // } catch(ForgotPasswordVerificationException ex) {
-        //
-        //     // user has tried too many attempts
-        //     throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 3)");
-        //
-        // }
+        } catch(NotFoundException ex) {
+
+            // user with this email was not found     
+            throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 1)");
+
+        } catch(EmailVerificationException ex) {
+
+            // email was not verified      
+            throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 2)");
+
+        } catch(ForgotPasswordVerificationException ex) {
+
+            // user has tried too many attempts
+            throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 3)");
+
+        }
         
         
 
@@ -283,15 +283,14 @@ public class ForgotPasswordService {
         // the user has at least one forgot password code, 
         // and now we have their last one chronologically
         ForgotPasswordCode code = maybeCode.get();
-
-        OffsetDateTime now = OffsetDateTime.now();
         
-        // if the time of code creation + the wait time
-        // is less than now, the user has passed this verification
-        if (code.getCreatedAt().plusMinutes(NEXT_CODE_WAIT_TIME).isBefore(now)) {
+        // since the time the code was generated, 
+        // at least these minutes have passed,
+        // which means, from the last code, the user has waited
+        // at least these minutes
+        if(TimeHelper.sinceHavePassedAtLeast(code.getCreatedAt(), NEXT_CODE_WAIT_TIME)) {
             return;
         }
-        
         
         throw new ForgotPasswordVerificationException("The user has tried too many times "
                                                         +"to reset their password. They must wait.");    

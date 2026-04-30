@@ -8,6 +8,16 @@ import java.time.OffsetDateTime;
 public class TimeHelper {
 
     /**
+     * Since {@code input time } have passed at least {@code minutes}
+     */
+    public static boolean sinceHavePassedAtLeast(OffsetDateTime inputTime, long minutes) throws InvalidDataException
+    {
+        TimeHelper.requireNotNull(inputTime);
+        OffsetDateTime now = OffsetDateTime.now();
+        return inputTime.plusMinutes(minutes).isBefore(now);
+    }    
+    
+    /**
      * Returns true if the input time is older than {@code minutes} minutes ago.
      */
     public static boolean isExpiredWithin(OffsetDateTime inputTime, long minutes) throws InvalidDataException 
