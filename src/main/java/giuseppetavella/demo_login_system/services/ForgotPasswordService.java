@@ -43,7 +43,7 @@ public class ForgotPasswordService {
 
 
     /**
-     * ## FORGOT PASSWORD: STEP 1
+     * ## FORGOT PASSWORD: STEP 1 (GRANT AUTHORIZATION CODE TO EMAIL)
      * 
      * Grant the user associated with the input email,
      * the permission to set a new password.
@@ -51,7 +51,7 @@ public class ForgotPasswordService {
      *
      * @throws ForgotPasswordVerificationException if the user is not authorized to set a password
      */
-    public void ifEmailIsAuthorized(String email) throws ForgotPasswordVerificationException 
+    public void grantAuthorizationCodeToEmail(String email) throws ForgotPasswordVerificationException 
     {
         try {
             // this email must exist and must have been verified
@@ -87,38 +87,19 @@ public class ForgotPasswordService {
         }
         
     }
-
-    /**
-     * Generate a new code and save it in DB.
-     * It also involves making all other codes of this user as unusable.
-     * 
-     * Ideally, this code is what you email to the user, 
-     * so that they can click it.
-     */
-    @Transactional
-    private ForgotPasswordCode whenGenerateNewCode(User user) 
-    {
-        
-        // mark all the codes for this user as unusable 
-        this.forgotPasswordRepository.markAllCodesAsUnusable(user);
-        
-        // this code is the only one, at this moment, that is usable
-        ForgotPasswordCode newCode = new ForgotPasswordCode(user);
-        
-        return this.forgotPasswordRepository.save(newCode);
-    }
     
 
     /**
-     * ## FORGOT PASSWORD: STEP 2
+     * ## FORGOT PASSWORD: STEP 2 (VERIFY AUTHORIZATION CODE)
      * 
      * Grant the user associated with the input code,
      * the permission to access the page where the user
      * will set the new password.
      */
-    // public void ifCodeIsValidBeforeClick(String code) {
-    //    
-    // }
+    public void verifyAuthorizationCode(UUID code) {
+        
+    }
+    
 
     /**
      * If the code is valid after click.
@@ -143,7 +124,26 @@ public class ForgotPasswordService {
     //    
     // }
 
+    /**
+     * Generate a new code and save it in DB.
+     * It also involves making all other codes of this user as unusable.
+     *
+     * Ideally, this code is what you email to the user, 
+     * so that they can click it.
+     */
+    @Transactional
+    private ForgotPasswordCode whenGenerateNewCode(User user)
+    {
 
+        // mark all the codes for this user as unusable 
+        this.forgotPasswordRepository.markAllCodesAsUnusable(user);
+
+        // this code is the only one, at this moment, that is usable
+        ForgotPasswordCode newCode = new ForgotPasswordCode(user);
+
+        return this.forgotPasswordRepository.save(newCode);
+    }
+    
     /**
      * Get the last code of the given user, if it exists.
      */

@@ -3,8 +3,11 @@ package giuseppetavella.demo_login_system.controllers;
 
 // import giuseppetavella.demo_login_system.services.AuthService;
 import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
+import giuseppetavella.demo_login_system.exceptions.ForgotPasswordVerificationException;
+import giuseppetavella.demo_login_system.exceptions.InvalidUUIDStringException;
 import giuseppetavella.demo_login_system.exceptions.PayloadValidationException;
 import giuseppetavella.demo_login_system.helpers.PayloadValidationHelper;
+import giuseppetavella.demo_login_system.helpers.StringHelper;
 import giuseppetavella.demo_login_system.payloads.in_request.LoginSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.forgot_password.ForgotPasswordRequestWithEmailSentDTO;
@@ -22,6 +25,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,6 +41,11 @@ public class AuthController {
     private ForgotPasswordService forgotPasswordService;
 
 
+
+    // ************************************
+    // SIGNUP & LOGIN
+    // ************************************
+    
     /**
      * Login a user.
      */
@@ -63,7 +72,12 @@ public class AuthController {
 
     }
 
+    
+    // ************************************
+    // VERIFY USER'S EMAIL
+    // ************************************
 
+    
     /**
      * Verify if the code is valid.
      * If yes, the email of the account associated with this code, 
@@ -85,23 +99,27 @@ public class AuthController {
         
         return "Your email was verified. Thank you. You may close this page and login.";
     }
-
-
+    
+    // ************************************
+    // FORGOT PASSWORD 
+    // ************************************
+    
     /**
      * Verify if user with this email is allowed to set a new password. 
      * Checks if email exists, has been verified etc. 
      * and eventually generates and emails a new code.
      */
     @PostMapping("/forgot-password/request")
-    public ForgotPasswordToSendDTO forgotPasswordRequest(@RequestBody @Validated ForgotPasswordRequestWithEmailSentDTO body, 
-                                      BindingResult validation) 
+    public ForgotPasswordToSendDTO forgotPasswordGrantAuthorization(
+                                        @RequestBody @Validated ForgotPasswordRequestWithEmailSentDTO body, 
+                                        BindingResult validation) 
     {
 
         PayloadValidationHelper.requireNoErrors(validation);
         
         String email = body.email();
         
-        this.forgotPasswordService.ifEmailIsAuthorized(email);
+        this.forgotPasswordService.grantAuthorizationCodeToEmail(email);
         
         String message = "We've just sent you an email with a unique authorization link. "
                         +"For your security, the link will expire soon and can only be used once.";
@@ -117,15 +135,24 @@ public class AuthController {
      * can actually set new password on the "set new password" page. 
      * Then we should mark this code as clicked or similar logic.
      */
-    // @PostMapping("/forgot-password/verify")
-    // public ForgotPasswordToSendDTO verifyForgotPasswordAuthorization(@RequestBody @Validated VerifyForgotPasswordCodeSentDTO body,
-    //                                                                 BindingResult validation)
-    // {
+    @PostMapping("/forgot-password/verify")
+    public void forgotPasswordVerifyAuthorization(@RequestBody @Validated VerifyForgotPasswordCodeSentDTO body,
+                                                  BindingResult validation)
+    {
 
-        // PayloadValidationHelper.requireNoErrors(validation);
+        PayloadValidationHelper.requireNoErrors(validation);
+        
+        try {
+            
+            UUID code = StringHelper.parseUUID(body.code());
 
-        // String email = body.email();
+        } catch(InvalidUUIDStringException ex) {
+            throw new ForgotPasswordVerificationException("Code is not valid (error 10).");
+        }
+        
         //
+        // this.forgotPasswordService.verifyAuthorizationCode(code);
+        
         // this.forgotPasswordService.ifEmailIsAuthorized(email);
         //
         // String message = "We've just sent you an email with a unique authorization link. "
@@ -133,7 +160,7 @@ public class AuthController {
         //
         // return new ForgotPasswordToSendDTO(message);
 
-    // }
+    }
 
 
 
