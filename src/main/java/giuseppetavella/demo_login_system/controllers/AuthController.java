@@ -136,30 +136,28 @@ public class AuthController {
      * Then we should mark this code as clicked or similar logic.
      */
     @PostMapping("/forgot-password/verify")
-    public void forgotPasswordVerifyAuthorization(@RequestBody @Validated VerifyForgotPasswordCodeSentDTO body,
+    public ForgotPasswordToSendDTO forgotPasswordVerifyAuthorizationBeforeClick(
+                                                  @RequestBody @Validated VerifyForgotPasswordCodeSentDTO body,
                                                   BindingResult validation)
     {
 
         PayloadValidationHelper.requireNoErrors(validation);
         
+        UUID code;
+        
+        // verify that code is a valid UUID, but don't tell client
+        // that we're doing it
         try {
             
-            UUID code = StringHelper.parseUUID(body.code());
+            code = StringHelper.parseUUID(body.code());
 
         } catch(InvalidUUIDStringException ex) {
             throw new ForgotPasswordVerificationException("Code is not valid (error 10).");
         }
         
-        //
-        // this.forgotPasswordService.verifyAuthorizationCode(code);
+        this.forgotPasswordService.verifyAuthorizationCodeWhenClick(code);
         
-        // this.forgotPasswordService.ifEmailIsAuthorized(email);
-        //
-        // String message = "We've just sent you an email with a unique authorization link. "
-        //         +"For your security, the link will expire soon and can only be used once.";
-        //
-        // return new ForgotPasswordToSendDTO(message);
-
+        return new ForgotPasswordToSendDTO("You are authorized to access the page to set a new password.");
     }
 
 

@@ -9,7 +9,7 @@
     POST /register                      (create new profile/account)
     GET  /verify-email/:code            (mark the account with this email as verified)
     POST /forgot-password/request       (is this email authorized to set a new password?)
-    POST /forgot-password/verify/:code  (can this email set a new password right now?)
+    POST /forgot-password/verify  (can this email set a new password right now?)
     POST /forgot-password/reset         (set a new password right now)
 
 /users

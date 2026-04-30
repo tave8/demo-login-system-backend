@@ -5,6 +5,7 @@ import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
 import giuseppetavella.demo_login_system.exceptions.ForgotPasswordVerificationException;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
+import giuseppetavella.demo_login_system.helpers.TimeHelper;
 import giuseppetavella.demo_login_system.repositories.ForgotPasswordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,9 +30,14 @@ public class ForgotPasswordService {
     
     private final String frontendUrl;
     
-    // how much time the user must wait before being authorized
-    // to receive a new code (in minutes)
+    // how many minutes the user must wait before being authorized
+    // to receive a new code.
     private static final long NEXT_CODE_WAIT_TIME = 30;
+    
+    // how many minutes the user has to set a new password,
+    // starting when the code is generated.
+    // (TTL = time to live) 
+    private static final long SET_PASSWORD_TTL = 5;
 
     
     public ForgotPasswordService(
@@ -90,13 +96,63 @@ public class ForgotPasswordService {
     
 
     /**
-     * ## FORGOT PASSWORD: STEP 2 (VERIFY AUTHORIZATION CODE)
+     * ## FORGOT PASSWORD: STEP 2 (VERIFY AUTHORIZATION CODE WHEN CLICK)
+     * 
+     * Triggered when email clicks code link.
      * 
      * Grant the user associated with the input code,
      * the permission to access the page where the user
-     * will set the new password.
+     * will set the new password. Calling this method 
+     * will mark the given code as clicked. 
      */
-    public void verifyAuthorizationCode(UUID code) {
+    public void verifyAuthorizationCodeWhenClick(UUID codeId) 
+    {
+
+        try {
+            
+            // the code must exist
+            ForgotPasswordCode code = this.findById(codeId);
+            
+            // the code must be non-expired
+            this.requireNotExpiredCode(code, SET_PASSWORD_TTL);
+            
+            // the code must be usable 
+            this.requireUsableCode(code);
+            
+            // the code must be not clicked
+            this.requireNotClickedCode(code);
+            
+            // the code must belong to a user that exists
+            User owner = this.usersService.findById(code.getUser().getUserId());
+            
+            // the code must belong to a user with verified email
+            this.requireVerifiedEmail(owner);
+            
+            // ALL CONTROLS PASSED ********
+            
+            // mark code as clicked
+            this.forgotPasswordRepository.markCodeAsClicked(code);
+            
+            // mark all other codes of this owner as unusable,
+            // except this code
+            this.forgotPasswordRepository.markAllCodesAsUnusableExcept(owner, code);
+
+        } catch(NotFoundException ex) {
+
+            // user with this email was not found     
+            throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 1)");
+
+        } catch(EmailVerificationException ex) {
+
+            // email was not verified      
+            throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 2)");
+
+        } catch(ForgotPasswordVerificationException ex) {
+
+            // user has tried too many attempts
+            throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 3)");
+
+        }
         
     }
     
@@ -110,18 +166,29 @@ public class ForgotPasswordService {
 
 
     /**
-     * ## FORGOT PASSWORD: STEP 3
+     * ## FORGOT PASSWORD: STEP 3 
      * 
      * Grant the user to finally set the new password, 
      * if the code is still valid.
      */
-    // public void ifCodeCanSetPassword(String code, String newPassword) {
-    //     // the user cannot set a new password, 
-    //     // if the code is not valid after the click
-    //     this.ifCodeIsValidAfterClick(code);
-    //    
-    //    
-    //    
+    // public void ifAuthorizedSetPassword(String code, String newPassword) {
+        // the user cannot set a new password, 
+        // if the code is not valid after the click
+        // this.ifCodeIsValidAfterClick(code);
+
+        // the code must exist
+
+        // the code must be non-expired
+
+        // the code must be usable 
+
+        // the code must be clicked
+
+        // the code must belong to a user that exists
+
+        // the code must belong to a user with verified email     
+
+
     // }
 
     /**
@@ -200,15 +267,89 @@ public class ForgotPasswordService {
 
         User emailOwner = this.usersService.findByEmail(email);
 
+        return this.requireVerifiedEmail(emailOwner);
+        
+    }
+
+    
+    /**
+     * Require that this owner has a verified email.
+     * 
+     * 
+     */
+    private User requireVerifiedEmail(User emailOwner) throws NotFoundException, 
+                                                                EmailVerificationException 
+    {
+        
         // if this email exists but the user has not verified it
         if(!emailOwner.isVerifiedEmail()) {
             throw new EmailVerificationException("Email is not verified.");
         }
-        
+
         return emailOwner;
         
     }
 
+
+    /**
+     * Require that the code is not expired.
+     * 
+     * @throws ForgotPasswordVerificationException if code is expired
+     */
+    private void requireNotExpiredCode(ForgotPasswordCode code, long minutes) throws ForgotPasswordVerificationException
+    {
+        
+        if(TimeHelper.isValidWithin(code.getCreatedAt(), minutes)) {
+            return;
+        }
+
+        throw new ForgotPasswordVerificationException("The code with ID '" + code.getCode() + "' is expired.");
+        
+    }
+    
+
+    /**
+     * Require that the code is usable.
+     */
+    private void requireUsableCode(ForgotPasswordCode code) throws ForgotPasswordVerificationException
+    {
+        
+        if(code.isUsable()) {
+            return;
+        }
+        
+        throw new ForgotPasswordVerificationException("The code with ID '" + code.getCode() + "' is not usable.");
+        
+    }
+
+    
+    /**
+     * Require that the code is not clicked.
+     */
+    private void requireNotClickedCode(ForgotPasswordCode code) throws ForgotPasswordVerificationException 
+    {
+    
+        if(!code.isClicked()) {
+            return;
+        }
+
+        throw new ForgotPasswordVerificationException("The code with ID '" + code.getCode() + "'is already clicked.");
+        
+    }
+    
+
+    /**
+     * 
+     * @return the code
+     * @throws NotFoundException if code with the given ID has not been found
+     */
+    public ForgotPasswordCode findById(UUID codeId) throws NotFoundException 
+    {
+        return this.forgotPasswordRepository
+                    .findById(codeId)
+                    .orElseThrow(() -> new NotFoundException("Code with ID '" + codeId + "' has not been found."));
+    }
+    
 
 
     /**
