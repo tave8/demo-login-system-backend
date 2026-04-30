@@ -18,10 +18,8 @@ public interface ForgotPasswordRepository extends JpaRepository<ForgotPasswordCo
     /**
      * Get the last forgot password code of this user.
      */
-    @Query("SELECT f FROM ForgotPasswordCode f WHERE f.user = :user ORDER BY f.createdAt DESC LIMIT 1")
-    Optional<ForgotPasswordCode> getLastCodeByUser(@Param("user") User user);
-
-    
+    @Query("SELECT code FROM ForgotPasswordCode code WHERE code.user = :user ORDER BY code.createdAt DESC LIMIT 1")
+    Optional<ForgotPasswordCode> getLastCodeOfUser(@Param("user") User user);
 
     /**
      * Mark all codes of the given user, as unusable. 
@@ -32,7 +30,7 @@ public interface ForgotPasswordRepository extends JpaRepository<ForgotPasswordCo
      */
     @Modifying
     @Transactional
-    @Query("UPDATE ForgotPasswordCode f SET f.usable = false WHERE f.user = :user")
+    @Query("UPDATE ForgotPasswordCode code SET code.usable = false WHERE code.user = :user")
     void markAllCodesAsUnusable(@Param("user") User user);
 
     
@@ -54,5 +52,6 @@ public interface ForgotPasswordRepository extends JpaRepository<ForgotPasswordCo
     @Query("UPDATE ForgotPasswordCode code SET code.clicked = true WHERE code = :code")
     void markCodeAsClicked(@Param("code") ForgotPasswordCode code);
 
-
+    
+    
 }

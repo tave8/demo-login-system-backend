@@ -120,7 +120,7 @@ public class ErrorsHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorsToSendDTO handleUnsupportedMediaType(HttpMediaTypeNotSupportedException ex) {
-        String msg = "Questo media type non è supportato. DETTAGLI: " + ex.getMessage();
+        String msg = "This media type is not supported. Maybe this request expected another media type? DETAILS: " + ex.getMessage();
         return new ErrorsToSendDTO(msg);
     }
 

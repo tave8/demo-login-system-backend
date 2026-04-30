@@ -7,8 +7,11 @@ import giuseppetavella.demo_login_system.exceptions.ForgotPasswordVerificationEx
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.helpers.TimeHelper;
 import giuseppetavella.demo_login_system.repositories.ForgotPasswordRepository;
+import giuseppetavella.demo_login_system.repositories.UsersRepository;
+import giuseppetavella.demo_login_system.security.TokenTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,13 @@ public class ForgotPasswordService {
     
     @Autowired
     private AppEmailService appEmailService;
+    
+    @Autowired
+    private UsersRepository usersRepository;
+    
+    @Autowired
+    private PasswordEncoder bcrypt;
+    
     
     // this is a constructor-injected dependency
     private final String frontendUrl;
@@ -62,6 +72,7 @@ public class ForgotPasswordService {
      *
      * @throws ForgotPasswordVerificationException if the user is not authorized to set a password
      */
+    @Transactional
     public void grantAuthorizationCodeToEmail(String email) throws ForgotPasswordVerificationException 
     {
         try {
@@ -110,6 +121,7 @@ public class ForgotPasswordService {
      * will set the new password. Calling this method 
      * will mark the given code as clicked. 
      */
+    @Transactional
     public void verifyAuthorizationCodeWhenClick(UUID codeId) 
     {
 
@@ -161,40 +173,68 @@ public class ForgotPasswordService {
         
     }
     
+    
 
     /**
-     * If the code is valid after click.
-     */
-    // public void ifCodeIsValidAfterClick(String code) {
-    //    
-    // }
-
-
-    /**
-     * ## FORGOT PASSWORD: STEP 3 
+     * ## FORGOT PASSWORD: STEP 3 (SET NEW PASSWORD IF AUTHORIZED)
      * 
      * Grant the user to finally set the new password, 
      * if the code is still valid.
      */
-    // public void ifAuthorizedSetPassword(String code, String newPassword) {
-        // the user cannot set a new password, 
-        // if the code is not valid after the click
-        // this.ifCodeIsValidAfterClick(code);
+    @Transactional
+    public void setNewPasswordIfAuthorized(String newPassword, UUID codeId) {
 
-        // the code must exist
+        // try {
 
-        // the code must be non-expired
+            // the code must exist
+            ForgotPasswordCode code = this.findById(codeId);
 
-        // the code must be usable 
+            // the code must be non-expired
+            this.requireNotExpiredCode(code, SET_PASSWORD_TTL);
 
-        // the code must be clicked
+            // the code must be usable 
+            this.requireUsableCode(code);
 
-        // the code must belong to a user that exists
+            // the code must be clicked
+            this.requireClickedCode(code);
 
-        // the code must belong to a user with verified email     
+            // the code must belong to a user that exists
+            User owner = this.usersService.findById(code.getUser().getUserId());
+
+            // the code must belong to a user with verified email
+            this.requireVerifiedEmail(owner);
+
+            // ALL CONTROLS PASSED ********
+
+            // set all codes of this user as not usable
+            this.forgotPasswordRepository.markAllCodesAsUnusable(owner);
+
+            String hashedPassword = this.bcrypt.encode(newPassword);
+            
+            // set new password
+            this.usersRepository.setNewPassword(owner, hashedPassword);
+
+        // } catch(NotFoundException ex) {
+        //
+        //     // user with this email was not found     
+        //     throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 1)");
+        //
+        // } catch(EmailVerificationException ex) {
+        //
+        //     // email was not verified      
+        //     throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 2)");
+        //
+        // } catch(ForgotPasswordVerificationException ex) {
+        //
+        //     // user has tried too many attempts
+        //     throw new ForgotPasswordVerificationException("You are not authorized to reset your email. (error 3)");
+        //
+        // }
+        
+        
 
 
-    // }
+    }
 
     /**
      * Generate a new code and save it in DB.
@@ -221,7 +261,7 @@ public class ForgotPasswordService {
      */
     private Optional<ForgotPasswordCode> getLastCodeByUser(User user) 
     {
-        return this.forgotPasswordRepository.getLastCodeByUser(user);
+        return this.forgotPasswordRepository.getLastCodeOfUser(user);
     }
 
     
@@ -327,6 +367,21 @@ public class ForgotPasswordService {
         
     }
 
+
+    /**
+     * Require that the code is clicked.
+     */
+    private void requireClickedCode(ForgotPasswordCode code) throws ForgotPasswordVerificationException
+    {
+
+        if(code.isClicked()) {
+            return;
+        }
+
+        throw new ForgotPasswordVerificationException("The code with ID '" + code.getCode() + "' is not clicked.");
+
+    }
+    
     
     /**
      * Require that the code is not clicked.
@@ -338,7 +393,7 @@ public class ForgotPasswordService {
             return;
         }
 
-        throw new ForgotPasswordVerificationException("The code with ID '" + code.getCode() + "'is already clicked.");
+        throw new ForgotPasswordVerificationException("The code with ID '" + code.getCode() + "' is already clicked.");
         
     }
     

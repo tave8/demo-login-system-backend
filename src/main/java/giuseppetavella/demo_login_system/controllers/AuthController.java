@@ -10,6 +10,7 @@ import giuseppetavella.demo_login_system.helpers.PayloadValidationHelper;
 import giuseppetavella.demo_login_system.helpers.StringHelper;
 import giuseppetavella.demo_login_system.payloads.in_request.LoginSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO;
+import giuseppetavella.demo_login_system.payloads.in_request.forgot_password.ForgotPasswordNewPasswordSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.forgot_password.ForgotPasswordRequestWithEmailSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.forgot_password.VerifyForgotPasswordCodeSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterLoginDTO;
@@ -158,6 +159,41 @@ public class AuthController {
         this.forgotPasswordService.verifyAuthorizationCodeWhenClick(code);
         
         return new ForgotPasswordToSendDTO("You are authorized to access the page to set a new password.");
+    }
+
+
+    /**
+     *  After the user is done typing their password at frontend, 
+     *  frontend sends request with new password. 
+     *   Here we must run all checks. If all good, new password is set.
+     */
+    @PostMapping("/forgot-password/reset")
+    public ForgotPasswordToSendDTO setNewPasswordIfAuthorized(
+            @RequestBody @Validated ForgotPasswordNewPasswordSentDTO body,
+            BindingResult validation)
+    {
+
+        PayloadValidationHelper.requireNoErrors(validation);
+
+        UUID code;
+
+        // verify that code is a valid UUID, but don't tell client
+        // that we're doing it
+        try {
+
+            code = StringHelper.parseUUID(body.code());
+
+        } catch(InvalidUUIDStringException ex) {
+            throw new ForgotPasswordVerificationException("Code is not valid (error 10).");
+        }
+        
+        String newPassword = body.newPassword();
+        
+        //
+        this.forgotPasswordService.setNewPasswordIfAuthorized(newPassword, code);
+        
+        return new ForgotPasswordToSendDTO("You've successfully reset your password. "  
+                                            +"You can now login with this new password.");
     }
 
 

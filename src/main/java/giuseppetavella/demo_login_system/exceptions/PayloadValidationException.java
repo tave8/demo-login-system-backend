@@ -11,7 +11,7 @@ public class PayloadValidationException extends RuntimeException {
     }
 
     public PayloadValidationException(List<String> errors) {
-        super("Errore di validazione del payload: Almeno un campo non è valido.");
+        super("There's at least one invalid field in your payload.");
         this.errors = errors;
     }
 
