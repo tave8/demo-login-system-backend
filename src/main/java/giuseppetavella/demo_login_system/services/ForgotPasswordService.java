@@ -28,22 +28,27 @@ public class ForgotPasswordService {
     @Autowired
     private AppEmailService appEmailService;
     
+    // this is a constructor-injected dependency
     private final String frontendUrl;
     
     // how many minutes the user must wait before being authorized
     // to receive a new code.
-    private static final long NEXT_CODE_WAIT_TIME = 30;
+    private final long NEXT_CODE_WAIT_TIME;
     
     // how many minutes the user has to set a new password,
     // starting when the code is generated.
     // (TTL = time to live) 
-    private static final long SET_PASSWORD_TTL = 5;
+    private final long SET_PASSWORD_TTL;
 
-    
+    // we inject dependencies
     public ForgotPasswordService(
-            @Qualifier("frontendUrl") String frontendUrl)
+            @Qualifier("frontendUrl") String frontendUrl,
+            @Qualifier("forgotPasswordNextCodeWaitTime") long forgotPasswordNextCodeWaitTime,
+            @Qualifier("forgotPasswordSetPasswordTTL") long forgotPasswordSetPasswordTTL)
     {
         this.frontendUrl = frontendUrl;
+        this.NEXT_CODE_WAIT_TIME = forgotPasswordNextCodeWaitTime;
+        this.SET_PASSWORD_TTL = forgotPasswordSetPasswordTTL;
     }
 
 
