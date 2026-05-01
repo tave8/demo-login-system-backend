@@ -58,6 +58,13 @@ public class ErrorsHandler {
     public ErrorsToSendDTO handleForgotPasswordVerification(ForgotPasswordVerificationException ex) {
         return new ErrorsToSendDTO(ex.getMessage());
     }
+
+
+    @ExceptionHandler(PdfGenerationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorsToSendDTO handlePdfGeneration(PdfGenerationException ex) {
+        return new ErrorsToSendDTO(ex.getMessage());
+    }
     
     /**
      * Handles exceptions raised when current user of request

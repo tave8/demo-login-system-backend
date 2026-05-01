@@ -1,6 +1,7 @@
 package giuseppetavella.demo_login_system.services;
 
 import giuseppetavella.demo_login_system.enums.internal.BrowserContentDispositionHeader;
+import giuseppetavella.demo_login_system.exceptions.PdfGenerationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.exceptions.TemplateEngineException;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.*;
@@ -26,7 +28,7 @@ public class PdfGenerationService {
      * template + vars -> HTTP response entity 
      */
     public ResponseEntity<byte[]> templateToHttpResponse(String template,
-                                                        Map<String, String> vars,
+                                                        Map<String, Object> vars,
                                                         String outputFilename,
                                                         BrowserContentDispositionHeader contentDispositionHeader) 
     {
@@ -39,22 +41,10 @@ public class PdfGenerationService {
     }
 
     
-    // public ResponseEntity<byte[]> pdfToUpload(String template,
-    //                                                 Map<String, String> vars,
-    //                                                 String outputFilename,
-    //                                                 BrowserContentDispositionHeader contentDispositionHeader)
-    // {
-    //     String html = this.templateToHtml(template, vars);
-    //     ByteArrayOutputStream baos = this.htmlToPdf(html);
-    //     return this.pdfToHttpResponse(baos, outputFilename, contentDispositionHeader);
-    // }
-    
-
-    
     /**
      * template + vars -> HTML
      */
-    public String templateToHtml(String template, Map<String, String> vars) 
+    public String templateToHtml(String template, Map<String, Object> vars) throws PdfGenerationException 
     {
         
         Context ctx = new Context();
@@ -63,8 +53,14 @@ public class PdfGenerationService {
         for(String var : vars.keySet()) {
             ctx.setVariable(var, vars.get(var));
         }
-        
-        return this.templateEngine.process(template, ctx);
+
+        try {
+            
+            return this.templateEngine.process(template, ctx);
+            
+        } catch (TemplateEngineException ex) {
+            throw new PdfGenerationException("Failed to render template: " + template + " DETAILS: " + ex.getMessage());
+        }
 
     }
     
@@ -72,14 +68,25 @@ public class PdfGenerationService {
     /**
      * HTML -> PDF
      */
-    public ByteArrayOutputStream htmlToPdf(String html) {
+    public ByteArrayOutputStream htmlToPdf(String html) throws PdfGenerationException 
+    {
         // Generate PDF into memory
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ITextRenderer renderer = new ITextRenderer();
-        renderer.setDocumentFromString(html, null);
-        renderer.layout();
-        renderer.createPDF(baos);
-        return baos;
+        
+        try {
+            
+            renderer.setDocumentFromString(html, null);
+            renderer.layout();
+            renderer.createPDF(baos);
+            return baos;
+            
+        } catch (Exception ex) {
+            
+            throw new PdfGenerationException("Failed to generate PDF from HTML. DETAILS: " + ex.getMessage());
+       
+        }
+        
     }
     
 
@@ -99,9 +106,23 @@ public class PdfGenerationService {
 
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
-            
-    
-    
+
+
+
+
+    // public ResponseEntity<byte[]> pdfToUpload(String template,
+    //                                                 Map<String, String> vars,
+    //                                                 String outputFilename,
+    //                                                 BrowserContentDispositionHeader contentDispositionHeader)
+    // {
+    //     String html = this.templateToHtml(template, vars);
+    //     ByteArrayOutputStream baos = this.htmlToPdf(html);
+    //     return this.pdfToHttpResponse(baos, outputFilename, contentDispositionHeader);
+    // }
+
+
+
+
     // public void saveInvoiceLocal() throws IOException {
     //
     //     // 1. Render Thymeleaf template to HTML string

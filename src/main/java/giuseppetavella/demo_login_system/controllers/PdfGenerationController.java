@@ -21,8 +21,8 @@ public class PdfGenerationController {
     @GetMapping("/download")
     public ResponseEntity<byte[]> downloadInvoice() throws Exception {
 
-        Map<String, String> vars = Map.of(
-                "firstname", "Giuseppe"
+        Map<String, Object> vars = Map.of(
+                "firstnamdfde", "Giuseppe"
         );
                 
         return this.pdfGenerationService.templateToHttpResponse(
