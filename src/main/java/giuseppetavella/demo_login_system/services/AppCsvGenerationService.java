@@ -5,6 +5,7 @@ import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.enums.internal.CsvSeparator;
 import giuseppetavella.demo_login_system.helpers.FileHelper;
 import giuseppetavella.demo_login_system.models.Csv;
+import giuseppetavella.demo_login_system.models.ExcelCsv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class AppCsvGenerationService extends CsvGenerationService {
         
         String[] fields = {"Author", "Title", "Content"};
         
-        Csv csv = new Csv(fields, CsvSeparator.SEMICOLON, true);
+        Csv csv = new Csv(fields);
         
         for (Article article : articles) {
             csv.addRow(

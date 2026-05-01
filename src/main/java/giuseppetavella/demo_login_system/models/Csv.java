@@ -83,6 +83,7 @@ public class Csv {
     private void generateHeader() {
 
         StringBuilder csv = this.getCsv();
+        String[] fields = this.getFields();
         String separator = this.getSeparator().getValue();
         
         // before generating the header fields,
@@ -91,24 +92,9 @@ public class Csv {
         if(this.isAddSeparatorHint()) {
             csv.append("sep=").append(separator).append("\n");
         }
-        
-        
-        int lastFieldIdx = fields.length-1;
-        String lastField = fields[lastFieldIdx];
 
-        // build the header
-        // all fields except last
-        for(int i = 0; i < fields.length-1; i++) {
-            String field = fields[i];
-            csv.append(field);
-            // separate each field with a comma at the end
-            csv.append(separator);
-        }
-
-        // last field does not have a comma at the end
-        csv.append(lastField);
-        // add a newline to header
-        csv.append("\n");
+        // separate each value but the last one
+        csv.append(String.join(separator, fields)).append("\n");
 
     }
 
