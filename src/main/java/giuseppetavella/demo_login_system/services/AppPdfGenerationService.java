@@ -32,4 +32,15 @@ public class AppPdfGenerationService extends PdfGenerationService {
 
     }
     
+
+    /**
+     * Generate the base64 of a template.
+     */
+    public String generateInvoiceAttachment(Map<String, Object> vars) throws PdfGenerationException
+    {
+        
+        return this.pdfToBase64("business/invoice", vars);
+        
+    }
+
 }

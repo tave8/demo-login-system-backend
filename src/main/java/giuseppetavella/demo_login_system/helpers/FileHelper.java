@@ -2,6 +2,8 @@ package giuseppetavella.demo_login_system.helpers;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
+
 public class FileHelper {
 
     // 1 MB
@@ -41,6 +43,13 @@ public class FileHelper {
      */
     public static boolean isWithinAvatarSize(MultipartFile file) {
         return FileHelper.sizeIsSmallerThan(file, 2 * FileHelper.MB);
+    }
+
+    /**
+     * byte array -> base64 
+     */
+    public static String toBase64(byte[] bytes) {
+        return Base64.getEncoder().encodeToString(bytes);
     }
     
 }

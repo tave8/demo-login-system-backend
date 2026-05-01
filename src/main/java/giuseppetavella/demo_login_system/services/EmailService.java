@@ -18,6 +18,7 @@ import java.util.List;
 @Service
 public class EmailService {
     
+    // Email API
     @Autowired
     private Resend resend;
     
@@ -48,7 +49,7 @@ public class EmailService {
 
     /**
      * Send an email.
-     * No attachments
+     * No attachments.
      */
     public String sendEmail(String recipient,
                             String subject,
@@ -59,24 +60,31 @@ public class EmailService {
 
 
     /**
-     * Send an email with an attachment
+     * Send an email with an attachment.
      */
-    // public String sendEmailWithAttachment() throws EmailSendingException
-    // {
-    //
-    //     Attachment att = Attachment.builder()
-    //             .fileName("invoice.pdf")
-    //             .content("invoiceBuffer")
-    //             .build();
-    //    
-    // }
+    public String sendEmailWithAttachment(String recipient,
+                                          String subject,
+                                          String html,
+                                          String outputAttachmentFilename,
+                                          String base64FileContent) throws EmailSendingException
+    {
+
+        Attachment attachment = Attachment.builder()
+                .fileName(outputAttachmentFilename)
+                .content(base64FileContent)
+                .build();
+        
+        List<Attachment> attachments = List.of(attachment);
+        
+        return this.sendEmail(recipient, subject, html, attachments);
+    }
 
 
     /**
      * Build the email params.
      * Can add attachments.
      */
-    public CreateEmailOptions buildEmailParams(String recipient, 
+    protected CreateEmailOptions buildEmailParams(String recipient, 
                                                String subject, 
                                                String html,
                                                List<Attachment> attachments) 
@@ -94,7 +102,7 @@ public class EmailService {
      * Build the email params.
      * No attachments.
      */
-    public CreateEmailOptions buildEmailParams(String recipient,
+    protected CreateEmailOptions buildEmailParams(String recipient,
                                                String subject,
                                                String html)
     {

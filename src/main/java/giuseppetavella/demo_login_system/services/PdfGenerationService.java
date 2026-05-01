@@ -4,6 +4,7 @@ import giuseppetavella.demo_login_system.enums.internal.BrowserContentDispositio
 import giuseppetavella.demo_login_system.exceptions.FileUploadException;
 import giuseppetavella.demo_login_system.exceptions.InvalidFileUploadedException;
 import giuseppetavella.demo_login_system.exceptions.PdfGenerationException;
+import giuseppetavella.demo_login_system.helpers.FileHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class PdfGenerationService {
     /**
      * template + vars -> HTTP response entity 
      */
-    public ResponseEntity<byte[]> templateToHttpResponse(String template,
+    protected ResponseEntity<byte[]> templateToHttpResponse(String template,
                                                         Map<String, Object> vars,
                                                         String outputFilename,
                                                         BrowserContentDispositionHeader contentDispositionHeader) 
@@ -49,7 +50,7 @@ public class PdfGenerationService {
     /**
      * template + vars -> PDF
      */
-    public ByteArrayOutputStream templateToPdf(String template,
+    protected ByteArrayOutputStream templateToPdf(String template,
                                                Map<String, Object> vars) throws PdfGenerationException
     {
         // template -> html 
@@ -63,7 +64,7 @@ public class PdfGenerationService {
     /**
      * template + vars -> HTML
      */
-    public String templateToHtml(String template, Map<String, Object> vars) throws PdfGenerationException 
+    protected String templateToHtml(String template, Map<String, Object> vars) throws PdfGenerationException 
     {
         
         Context ctx = new Context();
@@ -87,7 +88,7 @@ public class PdfGenerationService {
     /**
      * HTML -> PDF
      */
-    public ByteArrayOutputStream htmlToPdf(String html) throws PdfGenerationException 
+    protected ByteArrayOutputStream htmlToPdf(String html) throws PdfGenerationException 
     {
         // Generate PDF into memory
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -113,7 +114,7 @@ public class PdfGenerationService {
     /**
      * PDF -> HTTP response entity
      */
-    public ResponseEntity<byte[]> pdfToHttpResponse(ByteArrayOutputStream baos, 
+    protected ResponseEntity<byte[]> pdfToHttpResponse(ByteArrayOutputStream baos, 
                                                          String outputFilename,
                                                          BrowserContentDispositionHeader contentDispositionHeader) 
     {
@@ -134,7 +135,7 @@ public class PdfGenerationService {
      * 
      * @return URL of uploaded file
      */
-    public String pdfToUpload(String template, Map<String, Object> vars) throws PdfGenerationException, 
+    protected String pdfToUpload(String template, Map<String, Object> vars) throws PdfGenerationException, 
                                                                                 InvalidFileUploadedException, 
                                                                                 FileUploadException
     {
@@ -145,9 +146,19 @@ public class PdfGenerationService {
 
 
     /**
+     * template + vars -> base64
+     */
+    protected String pdfToBase64(String template, Map<String, Object> vars) throws PdfGenerationException
+    {
+        byte[] bytes = this.templateToPdf(template, vars).toByteArray();
+        return FileHelper.toBase64(bytes);
+    }
+
+
+    /**
      * PDF -> save local
      */
-    public void pdfToSaveLocal(String template, 
+    protected void pdfToSaveLocal(String template, 
                                Map<String, Object> vars, 
                                String outputDir, 
                                String outputFilename) throws PdfGenerationException 
@@ -175,8 +186,10 @@ public class PdfGenerationService {
             throw new PdfGenerationException(ex.getMessage());
             
         }
-        
 
     }
+    
+    
+    
     
 }
