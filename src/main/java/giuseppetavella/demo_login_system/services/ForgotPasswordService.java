@@ -94,7 +94,7 @@ public class ForgotPasswordService {
         } catch(NotFoundException ex) {
             
             // user with this email was not found     
-            throw new ForgotPasswordVerificationException("You cannot reset your email. (error 1)");
+            throw new ForgotPasswordVerificationException("You cannot reset your password. (error 1)");
             
         } catch(EmailVerificationException ex) {
             
