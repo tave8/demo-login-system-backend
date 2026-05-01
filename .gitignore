@@ -34,3 +34,6 @@ build/
 
 # secrets
 src/main/resources/application-local.properties
+
+# output files
+output/**
