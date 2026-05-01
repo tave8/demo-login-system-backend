@@ -3,6 +3,7 @@ package giuseppetavella.demo_login_system.services;
 import giuseppetavella.demo_login_system.entities.Article;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.helpers.FileHelper;
+import giuseppetavella.demo_login_system.models.Csv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +20,19 @@ public class AppCsvGenerationService extends CsvGenerationService {
         
         List<Article> articles = this.articlesService.findAll();
         
-        StringBuilder sb = new StringBuilder();
-
-        // header row
-        sb.append("Author,Title,Content\n"); 
+        String[] fields = {"Author", "Title", "Content"};
+        
+        Csv csv = new Csv(fields);
         
         for (Article article : articles) {
-            sb.append(article.getUser().getFirstname()).append(",")
-                .append(article.getTitle()).append(",")
-                .append(article.getContent()).append("\n");
+            csv.addRow(
+                article.getUser().getFirstname(),
+                article.getTitle(),
+                article.getContent()
+            );
         }
         
-        return sb.toString().getBytes();
+        return csv.toString().getBytes();
         
     }
     
