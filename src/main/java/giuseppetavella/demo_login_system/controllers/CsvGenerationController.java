@@ -1,0 +1,50 @@
+package giuseppetavella.demo_login_system.controllers;
+
+import giuseppetavella.demo_login_system.services.AppCsvGenerationService;
+import giuseppetavella.demo_login_system.services.AppPdfGenerationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+
+@RestController
+@RequestMapping("/csv-generation")
+public class CsvGenerationController {
+
+    @Autowired
+    private AppCsvGenerationService appCsvGenerationService;
+    
+    // @PostMapping("/upload-invoice")
+    // public String uploadInvoice() {
+    //
+    //     Map<String, Object> vars = Map.of(
+    //             "firstname", "Giuseppe"
+    //     );
+    //            
+    //     String fileUrl = this.appPdfGenerationService.uploadInvoice(vars);
+    //    
+    //     return  fileUrl;
+    // }
+
+    /**
+     * 
+     */
+    // @PostMapping("/save-invoice-local")
+    // public String saveInvoiceLocal(@RequestParam(value = "filename",defaultValue = "invoice.csv") String filename) {
+    //
+    //     Map<String, Object> vars = Map.of(
+    //             "firstname", "Giuseppe"
+    //     );
+    //
+    //     this.appCsvGenerationService.saveInvoiceLocal(vars, filename);
+    //
+    //     return "Invoice saved locally";
+    // }
+
+
+
+}

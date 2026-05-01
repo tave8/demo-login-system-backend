@@ -47,6 +47,14 @@ public class ArticlesService {
         return this.findById(StringHelper.parseUUID(articleIdAsStr));
     }
 
+
+    /**
+     * Get all articles
+     */
+    public List<Article> findAll() {
+        return this.articlesRepository.findAll();
+    }
+
     /**
      * Find my article by ID.
      * The owner of the article must match the given user.
