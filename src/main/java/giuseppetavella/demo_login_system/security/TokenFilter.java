@@ -92,7 +92,7 @@ public class TokenFilter extends OncePerRequestFilter {
         
         boolean isAuthPath = matcher.match("/auth/**", path);
         boolean isLoginPath = matcher.match("/auth/login", path);
-        boolean isPdfGeneration =  matcher.match("/generate-pdf/**", path);
+        boolean isPdfGeneration =  matcher.match("/pdf-generation/**", path);
         
         if(isFavicon) {
             filterChain.doFilter(request, response);

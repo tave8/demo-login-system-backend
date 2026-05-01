@@ -5,30 +5,45 @@ import giuseppetavella.demo_login_system.services.AppPdfGenerationService;
 import giuseppetavella.demo_login_system.services.PdfGenerationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 
 @RestController
-@RequestMapping("/generate-pdf")
+@RequestMapping("/pdf-generation")
 public class PdfGenerationController {
 
     @Autowired
     private AppPdfGenerationService appPdfGenerationService;
     
-    @GetMapping("/download")
-    public String downloadInvoice() throws Exception {
+    @PostMapping("/upload-invoice")
+    public String uploadInvoice() {
 
         Map<String, Object> vars = Map.of(
-                "firstnamdfde", "Giuseppe"
+                "firstname", "Giuseppe"
         );
                 
         String fileUrl = this.appPdfGenerationService.uploadInvoice(vars);
         
         return  fileUrl;
     }
-    
+
+    /**
+     * 
+     */
+    @PostMapping("/save-invoice-local")
+    public String saveInvoiceLocal(@RequestParam(value = "filename",defaultValue = "invoice.pdf") String filename) {
+
+        Map<String, Object> vars = Map.of(
+                "firstname", "Giuseppe"
+        );
+
+        this.appPdfGenerationService.saveInvoiceLocal(vars, filename);
+
+        return "Invoice saved locally";
+    }
+
+
+
 }

@@ -21,5 +21,15 @@ public class AppPdfGenerationService extends PdfGenerationService {
         return this.pdfToUpload("business/invoice", vars);
         
     }
+
+    /**
+     * Save an invoice locally.
+     */
+    public void saveInvoiceLocal(Map<String, Object> vars, String filename) throws PdfGenerationException
+    {
+
+        this.pdfToSaveLocal("business/invoice", vars, "/output", filename);
+
+    }
     
 }

@@ -8,6 +8,7 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -186,6 +187,12 @@ public class ErrorsHandler {
         return new ErrorsToSendDTO(msg);
     }
 
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsToSendDTO handleMissingRequestParameter(MissingServletRequestParameterException ex) {
+        String msg = "Some query string parameter is missing in the URL. DETAILS: " + ex.getMessage();
+        return new ErrorsToSendDTO(msg);
+    }
 
 
     @ExceptionHandler(Exception.class)
