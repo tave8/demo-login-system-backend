@@ -88,8 +88,21 @@ public class TokenFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         
         boolean isRoot = matcher.match("/", path);
+        boolean isFavicon = matcher.match("/favicon.ico", path);
+        
         boolean isAuthPath = matcher.match("/auth/**", path);
         boolean isLoginPath = matcher.match("/auth/login", path);
+        boolean isPdfGeneration =  matcher.match("/generate-pdf/**", path);
+        
+        if(isFavicon) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        if(isPdfGeneration) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         
         // there are no controls on root endpoint
         if(isRoot) {
