@@ -1,10 +1,14 @@
 package giuseppetavella.demo_login_system.services;
 
 import giuseppetavella.demo_login_system.entities.User;
+import giuseppetavella.demo_login_system.exceptions.EmailSendingException;
+import giuseppetavella.demo_login_system.models.EmailAttachment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import java.util.List;
 
 /**
  * Send business-specific emails.
@@ -36,7 +40,8 @@ public class AppEmailService extends EmailService {
      * Send verify your account email.
      * Should be sent only after signup.
      */
-    public void sendVerifyEmail(User user, String verificationUrl) {
+    public void sendVerifyEmail(User user, String verificationUrl) throws EmailSendingException
+    {
         
         Context context = new Context();
         context.setVariable("firstname", user.getFirstname());
@@ -51,7 +56,8 @@ public class AppEmailService extends EmailService {
     /**
      * Send forgot password authorization email.
      */
-    public void sendForgotPasswordAuthorization(User user, String verificationUrl) {
+    public void sendForgotPasswordAuthorization(User user, String verificationUrl) throws EmailSendingException
+    {
 
         Context context = new Context();
         context.setVariable("verificationUrl", verificationUrl);
@@ -60,5 +66,31 @@ public class AppEmailService extends EmailService {
 
         this.sendEmail(user.getEmail(), "Reset your password", htmlBody);
     }
-    
+
+
+    /**
+     * Send articles report email.
+     */
+    public void sendArticlesReport(User user, byte[] articlesReportCsv) throws EmailSendingException 
+    {
+
+        Context context = new Context();
+        context.setVariable("firstname", user.getFirstname());
+
+        String htmlBody = templateEngine.process("emails/articles_report", context);
+        
+        EmailAttachment attachment = new EmailAttachment(
+                articlesReportCsv, 
+                "articles_report.csv"
+        );
+
+        this.sendEmail(
+                user.getEmail(), 
+                "Articles Report", 
+                htmlBody, 
+                attachment
+        );
+    }
+
+
 }

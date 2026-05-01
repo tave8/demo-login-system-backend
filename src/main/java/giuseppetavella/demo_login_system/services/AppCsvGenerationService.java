@@ -14,25 +14,25 @@ public class AppCsvGenerationService extends CsvGenerationService {
     @Autowired
     private ArticlesService articlesService;
     
+    
     public byte[] generateArticlesReport() {
         
         List<Article> articles = this.articlesService.findAll();
         
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Author,Title,Content\n"); // header row
+        // header row
+        sb.append("Author,Title,Content\n"); 
+        
         for (Article article : articles) {
             sb.append(article.getUser().getFirstname()).append(",")
-                    .append(article.getTitle()).append(",")
-                    .append(article.getContent()).append("\n");
+                .append(article.getTitle()).append(",")
+                .append(article.getContent()).append("\n");
         }
         
         return sb.toString().getBytes();
         
     }
     
-    public String generateArticlesReportAttachment() {
-        return FileHelper.toBase64(this.generateArticlesReport());
-    }
     
 }

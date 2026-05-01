@@ -28,11 +28,12 @@ public class EmailService {
     private CreateEmailOptions.Builder defaultParams;
 
     /**
-     * Send an email with the default sender name, user and domain.
+     * Send an email.
+     * Many attachments.
      * 
      * @throws EmailSendingException if any problem occurred during email sending
      */
-    public String sendEmail(String recipient, 
+    protected String sendEmail(String recipient, 
                             String subject, 
                             String html,
                             List<EmailAttachment> attachments) throws EmailSendingException 
@@ -57,51 +58,29 @@ public class EmailService {
 
     /**
      * Send an email.
+     * One attachment.
+     */
+    protected String sendEmail(String recipient,
+                               String subject,
+                               String html,
+                               EmailAttachment attachment) throws EmailSendingException
+    {
+
+        return this.sendEmail(recipient, subject, html, List.of(attachment));
+    }
+
+    
+    /**
+     * Send an email.
      * No attachments.
      */
-    public String sendEmail(String recipient,
+    protected String sendEmail(String recipient,
                             String subject,
                             String html) throws EmailSendingException
     {
         return this.sendEmail(recipient, subject, html, List.of());
     }
-
     
-    /**
-     * Send an email with attachments.
-     */
-    public String sendEmailWithAttachments(String recipient,
-                                           String subject,
-                                           String html,
-                                           List<EmailAttachment> emailAttachments) throws EmailSendingException
-    {
-        return this.sendEmail(
-                recipient, 
-                subject, 
-                html, 
-                emailAttachments
-        );
-    }
-    
-
-    /**
-     * Send an email with an attachment.
-     */
-    public String sendEmailWithAttachment(String recipient,
-                                          String subject,
-                                          String html,
-                                          EmailAttachment emailAttachment) throws EmailSendingException
-    {
-
-        return this.sendEmailWithAttachments(
-                recipient, 
-                subject, 
-                html, 
-                List.of(emailAttachment)
-        );
-        
-    }
-
 
     /**
      * Build the email params.

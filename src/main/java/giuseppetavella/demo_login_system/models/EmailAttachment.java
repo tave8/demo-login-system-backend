@@ -1,5 +1,7 @@
 package giuseppetavella.demo_login_system.models;
 
+import giuseppetavella.demo_login_system.helpers.FileHelper;
+
 public class EmailAttachment {
     
     // base64-encoded file
@@ -13,6 +15,10 @@ public class EmailAttachment {
         this.filename = filename;
     }
 
+    public EmailAttachment(byte[] bytes, String filename) {
+        this(FileHelper.toBase64(bytes), filename);
+    }
+    
     public String getBase64Content() {
         return base64Content;
     }
