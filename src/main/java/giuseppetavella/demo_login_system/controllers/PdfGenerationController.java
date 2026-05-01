@@ -1,6 +1,7 @@
 package giuseppetavella.demo_login_system.controllers;
 
 import giuseppetavella.demo_login_system.enums.internal.BrowserContentDispositionHeader;
+import giuseppetavella.demo_login_system.services.AppPdfGenerationService;
 import giuseppetavella.demo_login_system.services.PdfGenerationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,22 +17,18 @@ import java.util.Map;
 public class PdfGenerationController {
 
     @Autowired
-    private PdfGenerationService pdfGenerationService;
+    private AppPdfGenerationService appPdfGenerationService;
     
     @GetMapping("/download")
-    public ResponseEntity<byte[]> downloadInvoice() throws Exception {
+    public String downloadInvoice() throws Exception {
 
         Map<String, Object> vars = Map.of(
                 "firstnamdfde", "Giuseppe"
         );
                 
-        return this.pdfGenerationService.templateToHttpResponse(
-                "business/invoice",
-                vars,
-                "invoice.pdf",
-                BrowserContentDispositionHeader.ATTACHMENT
-                
-        );
+        String fileUrl = this.appPdfGenerationService.uploadInvoice(vars);
+        
+        return  fileUrl;
     }
     
 }

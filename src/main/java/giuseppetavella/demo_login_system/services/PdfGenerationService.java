@@ -1,6 +1,8 @@
 package giuseppetavella.demo_login_system.services;
 
 import giuseppetavella.demo_login_system.enums.internal.BrowserContentDispositionHeader;
+import giuseppetavella.demo_login_system.exceptions.FileUploadException;
+import giuseppetavella.demo_login_system.exceptions.InvalidFileUploadedException;
 import giuseppetavella.demo_login_system.exceptions.PdfGenerationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +25,9 @@ public class PdfGenerationService {
     @Autowired
     private TemplateEngine templateEngine;
     
+    @Autowired
+    private FileUploadService fileUploadService;
+    
     
     /**
      * template + vars -> HTTP response entity 
@@ -39,6 +44,20 @@ public class PdfGenerationService {
         // pdf -> http response
         return this.pdfToHttpResponse(baos, outputFilename, contentDispositionHeader);
     }
+
+    
+    /**
+     * template + vars -> PDF
+     */
+    public ByteArrayOutputStream templateToPdf(String template,
+                                               Map<String, Object> vars) throws PdfGenerationException
+    {
+        // template -> html 
+        String html = this.templateToHtml(template, vars);
+        // html -> pdf 
+        return this.htmlToPdf(html);
+    }
+    
 
     
     /**
@@ -88,6 +107,7 @@ public class PdfGenerationService {
         }
         
     }
+
     
 
     /**
@@ -108,17 +128,20 @@ public class PdfGenerationService {
     }
 
 
-
-
-    // public ResponseEntity<byte[]> pdfToUpload(String template,
-    //                                                 Map<String, String> vars,
-    //                                                 String outputFilename,
-    //                                                 BrowserContentDispositionHeader contentDispositionHeader)
-    // {
-    //     String html = this.templateToHtml(template, vars);
-    //     ByteArrayOutputStream baos = this.htmlToPdf(html);
-    //     return this.pdfToHttpResponse(baos, outputFilename, contentDispositionHeader);
-    // }
+    /**
+     * 
+     * PDF -> upload
+     * 
+     * @return URL of uploaded file
+     */
+    public String pdfToUpload(String template, Map<String, Object> vars) throws PdfGenerationException, 
+                                                                                InvalidFileUploadedException, 
+                                                                                FileUploadException
+    {
+        ByteArrayOutputStream pdf = this.templateToPdf(template, vars);
+        byte[] byteArray = pdf.toByteArray();
+        return this.fileUploadService.uploadFile(byteArray);
+    }
 
 
 
