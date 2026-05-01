@@ -1,5 +1,6 @@
 package giuseppetavella.demo_login_system.models;
 
+import giuseppetavella.demo_login_system.enums.internal.CsvSeparator;
 import giuseppetavella.demo_login_system.exceptions.CsvGenerationException;
 import giuseppetavella.demo_login_system.helpers.FileHelper;
 
@@ -9,12 +10,20 @@ public class Csv {
     
     private final StringBuilder csv;
     private final String[] fields;
-    private final String separator;
+    private final CsvSeparator separator;
+    private final boolean addSeparatorHint;
 
     /**
      * Initialize a CSV with a custom separator.
+     * 
+     * @param fields array of header fields
+     * @param separator the value separator, for example comma
+     * @param addSeparatorHint whether to add a marker at the start of the csv (excel-specific),
+     *                         indicating which separator the csv is using
      */
-    public Csv(String[] fields, String separator) throws CsvGenerationException
+    public Csv(String[] fields, 
+               CsvSeparator separator, 
+               boolean addSeparatorHint) throws CsvGenerationException
     {
         if(fields.length == 0) {
             throw new CsvGenerationException("Csv must have at least 1 header field.");
@@ -23,15 +32,22 @@ public class Csv {
         this.csv = new StringBuilder();
         this.fields = fields;
         this.separator = separator;
+        this.addSeparatorHint = addSeparatorHint;
         this.generateHeader();
     }
 
+
+    public Csv(String[] fields, CsvSeparator separator) throws CsvGenerationException
+    {
+        this(fields, separator, false);
+    }
+    
     /**
      * Initialize a CSV with a comma as default separator
      */
     public Csv(String[] fields) throws CsvGenerationException
     {
-        this(fields, ",");
+        this(fields, CsvSeparator.COMMA, false);
     }
 
     /**
@@ -53,14 +69,10 @@ public class Csv {
         }
         
         StringBuilder csv = this.getCsv();
-        String separator = this.getSeparator();
-        
-        for(String value : values) {
-            csv.append(value).append(separator);
-        }
-        
-        // add a newline to signal the end of the row
-        csv.append("\n");
+        String separator = this.getSeparator().getValue();
+
+        // separate each value but the last one
+        csv.append(String.join(separator, values)).append("\n");
         
     }
 
@@ -71,7 +83,15 @@ public class Csv {
     private void generateHeader() {
 
         StringBuilder csv = this.getCsv();
-        String separator = this.getSeparator();
+        String separator = this.getSeparator().getValue();
+        
+        // before generating the header fields,
+        // let's check whether we need to add 
+        // an excel-specific separator hint
+        if(this.isAddSeparatorHint()) {
+            csv.append("sep=").append(separator).append("\n");
+        }
+        
         
         int lastFieldIdx = fields.length-1;
         String lastField = fields[lastFieldIdx];
@@ -115,8 +135,12 @@ public class Csv {
         return fields;
     }
 
-    public String getSeparator() {
+    public CsvSeparator getSeparator() {
         return separator;
+    }
+
+    public boolean isAddSeparatorHint() {
+        return addSeparatorHint;
     }
 
     /**
