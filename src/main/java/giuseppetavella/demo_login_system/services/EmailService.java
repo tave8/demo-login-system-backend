@@ -5,7 +5,7 @@ import com.resend.core.exception.ResendException;
 import com.resend.services.emails.model.Attachment;
 import com.resend.services.emails.model.CreateEmailOptions;
 import com.resend.services.emails.model.CreateEmailResponse;
-import giuseppetavella.demo_login_system.entities.EmailAttachment;
+import giuseppetavella.demo_login_system.models.EmailAttachment;
 import giuseppetavella.demo_login_system.exceptions.EmailSendingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,12 +35,18 @@ public class EmailService {
     public String sendEmail(String recipient, 
                             String subject, 
                             String html,
-                            List<Attachment> attachments) throws EmailSendingException 
+                            List<EmailAttachment> attachments) throws EmailSendingException 
     {
-
-        CreateEmailOptions params = this.buildEmailParams(recipient, subject, html, attachments);
+        
+        CreateEmailOptions params = this.buildEmailParams(
+                recipient, 
+                subject, 
+                html, 
+                this.toAPIAttachments(attachments)
+        );
         
         try {
+            
             CreateEmailResponse data = resend.emails().send(params);
             return data.getId();
             
@@ -69,19 +75,12 @@ public class EmailService {
                                            String html,
                                            List<EmailAttachment> emailAttachments) throws EmailSendingException
     {
-        List<Attachment> attachments = new ArrayList<>();
-
-        for(EmailAttachment emailAttachment : emailAttachments) {
-            // library-specific object
-            Attachment attachment = Attachment.builder()
-                    .fileName(emailAttachment.getFilename())
-                    .content(emailAttachment.getBase64Content())
-                    .build();
-            
-            attachments.add(attachment);
-        }
-
-        return this.sendEmail(recipient, subject, html, attachments);
+        return this.sendEmail(
+                recipient, 
+                subject, 
+                html, 
+                emailAttachments
+        );
     }
     
 
@@ -94,7 +93,12 @@ public class EmailService {
                                           EmailAttachment emailAttachment) throws EmailSendingException
     {
 
-        return this.sendEmailWithAttachments(recipient, subject, html, List.of(emailAttachment));
+        return this.sendEmailWithAttachments(
+                recipient, 
+                subject, 
+                html, 
+                List.of(emailAttachment)
+        );
         
     }
 
@@ -102,8 +106,9 @@ public class EmailService {
     /**
      * Build the email params.
      * Can add attachments.
+     * API-specific.
      */
-    protected CreateEmailOptions buildEmailParams(String recipient, 
+    private CreateEmailOptions buildEmailParams(String recipient, 
                                                String subject, 
                                                String html,
                                                List<Attachment> attachments) 
@@ -120,13 +125,36 @@ public class EmailService {
     /**
      * Build the email params.
      * No attachments.
+     * API-specific.
      */
-    protected CreateEmailOptions buildEmailParams(String recipient,
+    private CreateEmailOptions buildEmailParams(String recipient,
                                                String subject,
                                                String html)
     {
         return this.buildEmailParams(recipient, subject, html, List.of());
     }
 
+
+    /**
+     * Turn a list of app attachments, to API-specific attachments.
+     * (adapter/translation layer)
+     */
+    private List<Attachment> toAPIAttachments(List<EmailAttachment> emailAttachments) 
+    {
+        List<Attachment> attachments = new ArrayList<>();
+
+        for(EmailAttachment emailAttachment : emailAttachments) {
+            // library-specific object
+            Attachment attachment = Attachment.builder()
+                                        .fileName(emailAttachment.getFilename())
+                                        .content(emailAttachment.getBase64Content())
+                                        .build();
+
+            attachments.add(attachment);
+        }
+        
+        return attachments;
+    }
+    
 
 }
