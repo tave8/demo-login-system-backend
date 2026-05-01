@@ -1,10 +1,9 @@
 package giuseppetavella.demo_login_system.services;
 
 import com.cloudinary.Cloudinary;
-import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.FileUploadException;
 import giuseppetavella.demo_login_system.exceptions.InvalidFileUploadedException;
-import giuseppetavella.demo_login_system.helpers.FileHelper;
+import giuseppetavella.demo_login_system.interfaces.FileUploader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @Service
-public class FileUploadService {
+public class MediaUploadService implements FileUploader {
 
 
     @Autowired
@@ -36,7 +35,7 @@ public class FileUploadService {
 
         try {
             
-            return this.uploadBytes(inputFile.getBytes());
+            return this.upload(inputFile.getBytes());
             
         } catch (IOException ex) {
             throw new FileUploadException(ex.getMessage());
@@ -58,14 +57,15 @@ public class FileUploadService {
             throw new InvalidFileUploadedException("The byte array uploaded cannot be empty. The file is empty?");
         }
 
-        return this.uploadBytes(bytes);
+        return this.upload(bytes);
 
     }
 
     /**
      * Upload bytes to the file upload cloud provider.
      */
-    private String uploadBytes(byte[] bytes) throws FileUploadException
+    @Override
+    public String upload(byte[] bytes) throws FileUploadException
     {
         try {
             Map result = cloudinaryUploader

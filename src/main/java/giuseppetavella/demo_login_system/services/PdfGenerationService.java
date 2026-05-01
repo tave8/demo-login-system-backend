@@ -27,7 +27,7 @@ public class PdfGenerationService {
     private TemplateEngine templateEngine;
     
     @Autowired
-    private FileUploadService fileUploadService;
+    private MediaUploadService mediaUploadService;
     
     
     /**
@@ -141,7 +141,7 @@ public class PdfGenerationService {
     {
         ByteArrayOutputStream pdf = this.templateToPdf(template, vars);
         byte[] byteArray = pdf.toByteArray();
-        return this.fileUploadService.uploadFile(byteArray);
+        return this.mediaUploadService.uploadFile(byteArray);
     }
 
 

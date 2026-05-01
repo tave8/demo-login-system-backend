@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class ImageUploadService extends FileUploadService {
+public class ImageUploadService extends MediaUploadService {
 
 
     /**
