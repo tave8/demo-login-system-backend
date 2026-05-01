@@ -15,8 +15,6 @@ public class CsvDemoRunner implements CommandLineRunner {
     @Autowired
     private AppEmailService appEmailService;
     
-    @Autowired
-    private MediaUploadService mediaUploadService;
 
     @Override
     public void run(String... args) throws Exception {
