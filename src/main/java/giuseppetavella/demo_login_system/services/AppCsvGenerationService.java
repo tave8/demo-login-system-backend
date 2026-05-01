@@ -32,7 +32,7 @@ public class AppCsvGenerationService extends CsvGenerationService {
             );
         }
         
-        return csv.toString().getBytes();
+        return csv.toBytes();
         
     }
     
