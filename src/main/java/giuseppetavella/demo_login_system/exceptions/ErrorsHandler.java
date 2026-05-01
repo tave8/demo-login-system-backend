@@ -194,6 +194,13 @@ public class ErrorsHandler {
         return new ErrorsToSendDTO(msg);
     }
 
+    @ExceptionHandler(FileDownloadException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorsToSendDTO handleFileDownload(FileDownloadException ex) {
+        String msg = "Error while fetching or downloading remote file. DETAILS: " + ex.getMessage();
+        return new ErrorsToSendDTO(msg);
+    }
+
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

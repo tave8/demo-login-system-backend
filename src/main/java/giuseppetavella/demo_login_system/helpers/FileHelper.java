@@ -1,7 +1,11 @@
 package giuseppetavella.demo_login_system.helpers;
 
+import giuseppetavella.demo_login_system.exceptions.FileDownloadException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Base64;
 
 public class FileHelper {
@@ -50,6 +54,24 @@ public class FileHelper {
      */
     public static String toBase64(byte[] bytes) {
         return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    /**
+     * URL -> base64
+     */
+    public static String urlToBase64(String url) throws FileDownloadException 
+    {
+        try {
+            
+            byte[] bytes = new URL(url).openStream().readAllBytes();
+            return FileHelper.toBase64(bytes);
+        
+        } catch(MalformedURLException ex) {
+            throw new FileDownloadException("URL is malformed. DETAILS: " + ex.getMessage());  
+        } catch(IOException ex) {
+            throw new FileDownloadException(ex.getMessage());
+        }
+        
     }
     
 }

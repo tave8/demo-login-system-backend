@@ -39,21 +39,20 @@ public class EmailTestRunner implements CommandLineRunner {
         //
         // appEmailService.sendVerifyEmail(user);
         
-        Map<String, Object> vars = Map.of();
-        
-        String recipient = "giuseppetavella8@gmail.com";
-        String subject = "subject test";
-        String html = "<b>hello</b>";
-        String outputAttachmentFilename = "i_called_this.pdf";
-        String base64FileContent = this.appPdfGenerationService.generateInvoiceAttachment(vars);
-        
-        this.emailService.sendEmailWithAttachment(
-                recipient,
-                subject,
-                html,
-                outputAttachmentFilename,
-                base64FileContent
-        );
+        // Map<String, Object> vars = Map.of();
+        //
+        // String recipient = "giuseppetavella8@gmail.com";
+        // String subject = "subject test";
+        // String html = "<b>hello</b>";
+        // String outputAttachmentFilename = "i_called_this.pdf";
+        // String base64FileContent = this.appPdfGenerationService.generateInvoiceAttachment(vars);
+        //
+        // this.emailService.sendEmailWithAttachment(
+        //         recipient,
+        //         subject,
+        //         html,
+        //        
+        // );
         
         
     }
