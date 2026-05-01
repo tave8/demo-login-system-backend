@@ -29,7 +29,7 @@ public class UsersService {
     private PasswordEncoder bcrypt;
 
     @Autowired
-    private Cloudinary cloudinaryUploader;
+    private ImageUploadService imageUploadService;
 
     /**
      * Find a user by ID.
@@ -125,45 +125,21 @@ public class UsersService {
     /**
      * Upload my new avatar image.
      */
-    public User uploadMyAvatarImage(User user, MultipartFile avatarImage) {
-        // if the file is empty
-        if(avatarImage.isEmpty()) {
-            throw new InvalidFileUploadedException("The file uploaded cannot be empty.");
-        }
+    public User uploadMyAvatarImage(User user, MultipartFile avatarImage) throws InvalidFileUploadedException, 
+                                                                                 FileUploadException
+    {
         
-        // if file is not an image
-        if(!FileHelper.isImage(avatarImage)) {
-            throw new InvalidFileUploadedException("The file uploaded is not an image.");
-        }
-        
-        // if file is too big
+        // if image is too big
         if(!FileHelper.isWithinAvatarSize(avatarImage)) {
             throw new InvalidFileUploadedException("The file uploaded ("
                                                         +FileHelper.getFileSizeInMB(avatarImage)
                                                         +"MB) is too big. Max file size is 2MB.");
         }
         
-        String avatarUrl;
+        // get URL of uploaded image
+        String avatarUrl = this.imageUploadService.uploadImage(avatarImage);
 
-        try {
-            // upload image to cloudinary
-            Map result = cloudinaryUploader
-                    .uploader()
-                    // get the bytes of the file. 
-                    // this is what we're going to upload to cloudinary
-                    .upload(avatarImage.getBytes(), Map.of());
-
-            avatarUrl = (String) result.get("secure_url");
-
-        } catch (IOException | RuntimeException ex) {
-            throw new FileUploadException(ex.getMessage());
-        }
-
-        // get image url, if success
-
-        // System.out.println(avatarUrl);
-
-        // update author (with setter)
+        // update author
         user.setAvatarUrl(avatarUrl);
 
         // save user      

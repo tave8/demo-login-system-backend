@@ -28,13 +28,16 @@ public class FileUploadService {
     public String uploadFile(MultipartFile inputFile) throws InvalidFileUploadedException, 
                                                              FileUploadException 
     {
-
+        
+        // if file is empty
         if (inputFile.isEmpty()) {
             throw new InvalidFileUploadedException("The inputFile uploaded cannot be empty.");
         }
 
         try {
+            
             return this.uploadBytes(inputFile.getBytes());
+            
         } catch (IOException ex) {
             throw new FileUploadException(ex.getMessage());
         }
@@ -49,9 +52,10 @@ public class FileUploadService {
     public String uploadFile(byte[] bytes) throws InvalidFileUploadedException, 
                                                    FileUploadException 
     {
-
+        
+        // if there are no bytes = the file is empty
         if (bytes.length == 0) {
-            throw new InvalidFileUploadedException("The byte array uploaded cannot be empty.");
+            throw new InvalidFileUploadedException("The byte array uploaded cannot be empty. The file is empty?");
         }
 
         return this.uploadBytes(bytes);
@@ -59,7 +63,7 @@ public class FileUploadService {
     }
 
     /**
-     * Core upload logic.
+     * Upload bytes to the file upload cloud provider.
      */
     private String uploadBytes(byte[] bytes) throws FileUploadException
     {
@@ -75,10 +79,5 @@ public class FileUploadService {
         }
     }
     
-    
-    // public uploadImage() {
-    //    
-    // }
-
 
 }
