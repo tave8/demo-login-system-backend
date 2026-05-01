@@ -14,7 +14,7 @@ public class PdfRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         
-        this.pdfGenerationService.generateInvoice();
+        // this.pdfGenerationService.generateInvoice();
         
     }
 }
