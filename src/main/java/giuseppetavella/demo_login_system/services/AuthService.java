@@ -159,10 +159,17 @@ public class AuthService {
             userFromDB = this.usersService.findById(codeFromDB.getUser().getUserId());
             
         } catch(NotFoundException ex) {
-            throw new EmailVerificationException("While verifying email verification code, user was not found. "
-                                                    +"This should only happen if user was deleted after "
-                                                    +"the code was created. " + ex.getMessage());
+            // "While verifying email verification code, user was not found. "
+            // +"This should only happen if user was deleted after "
+            // +"the code was created. " + ex.getMessage()
+            throw new EmailVerificationException("This code is not valid (error 3)");
         }
+        
+        // the email was already verified
+        if(userFromDB.isVerifiedEmail()) {
+            throw new EmailVerificationException("This code is not valid (error 4).");
+        }
+        
         
         // user exists 
 

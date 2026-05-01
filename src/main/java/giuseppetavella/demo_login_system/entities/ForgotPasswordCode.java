@@ -23,6 +23,9 @@ public class ForgotPasswordCode {
     @Column(nullable = false)
     private boolean usable;
     
+    @Column(nullable = false)
+    private boolean used;
+    
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
     
@@ -32,6 +35,7 @@ public class ForgotPasswordCode {
         this.user = user;
         this.clicked = false;
         this.usable = true;
+        this.used = false;
         this.createdAt = OffsetDateTime.now();
     }
 
@@ -55,5 +59,7 @@ public class ForgotPasswordCode {
         return user;
     }
 
-
+    public boolean isUsed() {
+        return used;
+    }
 }

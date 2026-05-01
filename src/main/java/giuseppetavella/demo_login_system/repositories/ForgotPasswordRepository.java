@@ -53,5 +53,12 @@ public interface ForgotPasswordRepository extends JpaRepository<ForgotPasswordCo
     void markCodeAsClicked(@Param("code") ForgotPasswordCode code);
 
     
+    /**
+     * Mark the given code as used.
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE ForgotPasswordCode code SET code.used = true WHERE code = :code")
+    void markCodeAsUsed(@Param("code") ForgotPasswordCode code);
     
 }

@@ -208,6 +208,9 @@ public class ForgotPasswordService {
 
             // set all codes of this user as not usable
             this.forgotPasswordRepository.markAllCodesAsUnusable(owner);
+            
+            // mark this code as used
+            this.forgotPasswordRepository.markCodeAsUsed(code);
 
             String hashedPassword = this.bcrypt.encode(newPassword);
             
