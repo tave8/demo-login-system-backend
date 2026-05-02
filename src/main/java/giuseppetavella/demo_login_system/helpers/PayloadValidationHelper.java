@@ -7,6 +7,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * Helper class for dealing with request payloads.
+ * 
+ * The methods in this class should always throw {@code PayloadValidationError},
+ * at the very least.
+ * 
+ * <pre>{@code 
+ *    
+ *    PayloadValidationHelper.requiredPdf(file);
+ *    
+ *    PayloadValidationHelper.requireNoErrors(validation);
+ * 
+ * }</pre> 
+ * 
+ */
 public class PayloadValidationHelper {
     
     /**

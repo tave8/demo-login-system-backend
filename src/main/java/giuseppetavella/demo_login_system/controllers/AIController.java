@@ -4,6 +4,7 @@ import giuseppetavella.demo_login_system.CvData;
 import giuseppetavella.demo_login_system.helpers.PayloadValidationHelper;
 import giuseppetavella.demo_login_system.models.EmailAttachment;
 import giuseppetavella.demo_login_system.services.AIService;
+import giuseppetavella.demo_login_system.services.AppAIService;
 import giuseppetavella.demo_login_system.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,29 +13,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+
 @RestController
 @RequestMapping("/ai")
 public class AIController {
     
     @Autowired
-    private AIService aiService;
+    private AppAIService appAIService;
     
     @Autowired
     private EmailService emailService;
     
     @PostMapping("/extract/cv")
-    public void extractCv(@RequestParam("file") MultipartFile file) {
+    public CvData extractCv(
+            @RequestParam("file") MultipartFile file) 
+    {
 
         PayloadValidationHelper.requiredPdf(file);
 
-        this.emailService.sendEmail(
-                "giuseppetavella8@gmail.com",
-                "Your file",
-                "<b>hi</b>",
-                new EmailAttachment(file, "uploaded_file.pdf")
-        );
+        // this.emailService.sendEmail(
+        //         "giuseppetavella8@gmail.com",
+        //         "Your file",
+        //         "<b>hi</b>",
+        //         new EmailAttachment(file, "uploaded_file.pdf")
+        // );
         
-        // System.out.println(file.get);
+        return this.appAIService.extractCv(file);
         
     }
     

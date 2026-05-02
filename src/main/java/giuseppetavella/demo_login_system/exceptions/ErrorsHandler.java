@@ -66,7 +66,15 @@ public class ErrorsHandler {
     public ErrorsToSendDTO handlePdfGeneration(PdfGenerationException ex) {
         return new ErrorsToSendDTO(ex.getMessage());
     }
-    
+
+
+    @ExceptionHandler(AIException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorsToSendDTO handlAiException(AIException ex) {
+        return new ErrorsToSendDTO(ex.getMessage());
+    }
+
+
     /**
      * Handles exceptions raised when current user of request
      * is not authorized to access an endpoint. We protect

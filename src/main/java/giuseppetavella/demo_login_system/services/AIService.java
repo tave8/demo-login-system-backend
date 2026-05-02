@@ -1,6 +1,7 @@
 package giuseppetavella.demo_login_system.services;
 
 import giuseppetavella.demo_login_system.exceptions.AIException;
+import giuseppetavella.demo_login_system.helpers.FileHelper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -81,9 +82,10 @@ public class AIService {
     /**
      * Send a PDF and a prompt, get a text response.
      */
-    public String askWithPdf(byte[] pdfBytes, String prompt) throws AIException {
+    public String askWithPdf(byte[] pdfBytes, String prompt) throws AIException 
+    {
         try {
-            String base64Pdf = Base64.getEncoder().encodeToString(pdfBytes);
+            String base64Pdf = FileHelper.toBase64(pdfBytes);
 
             Map<String, Object> body = Map.of(
                     "model", MODEL,
@@ -124,7 +126,8 @@ public class AIService {
                 if (!response.isSuccessful()) {
                     throw new AIException("Anthropic API error: " + responseBody);
                 }
-
+                
+                // parse the response body into a map
                 Map<String, Object> parsed = mapper.readValue(responseBody, Map.class);
                 List<Map<String, Object>> content = (List<Map<String, Object>>) parsed.get("content");
                 return (String) content.get(0).get("text");
