@@ -74,6 +74,13 @@ public class ErrorsHandler {
         return new ErrorsToSendDTO(ex.getMessage());
     }
 
+    @ExceptionHandler(UnknownFileTypeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsToSendDTO handleUnknownFileTypeException(UnknownFileTypeException ex) {
+        return new ErrorsToSendDTO(ex.getMessage());
+    }
+
+
 
     /**
      * Handles exceptions raised when current user of request
@@ -188,10 +195,10 @@ public class ErrorsHandler {
     @ExceptionHandler(MissingServletRequestPartException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorsToSendDTO handleRequestIsMissingPart(MissingServletRequestPartException ex) {
-        String msg = "L'endpoint si aspetta che questa richiesta abbia qualche parte nel multipart, "
-                +"ma sembra che non ci sia. Questo può capitare se stai cercando "
-                +"di caricare un file, o l'endpoint si aspetta che carichi un file? "
-                +"DETTAGLI: " + ex.getMessage();
+        String msg = "This endpoint expects the request to have at least one part in the multipart, "
+                + "but it seems there is none. This can happen if you are trying to upload a file. "
+                + "Is the endpoint expecting a file upload? "
+                + "DETAILS: " + ex.getMessage();
         return new ErrorsToSendDTO(msg);
     }
 
