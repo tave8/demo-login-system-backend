@@ -25,5 +25,21 @@ public class ImageUploadService extends MediaUploadService {
         
         return this.uploadFile(image);
     }
+
+    /**
+     * Upload avatar image.
+     */
+    public String uploadAvatarImage(MultipartFile image) throws InvalidFileUploadedException,
+                                                                FileUploadException
+    {
+        // if image is too big
+        if(!FileHelper.isWithinAvatarSize(image)) {
+            throw new InvalidFileUploadedException("The file uploaded ("
+                                                    +FileHelper.getFileSizeInMB(image)
+                                                    +"MB) is too big. Max file size is 2MB.");
+        }
+
+        return this.uploadImage(image);
+    }
     
 }
