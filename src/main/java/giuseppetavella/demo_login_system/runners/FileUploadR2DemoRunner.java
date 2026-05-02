@@ -28,15 +28,14 @@ public class FileUploadR2DemoRunner implements CommandLineRunner {
 
          // byte[] csvBytes = this.appCsvGenerationService.generateArticlesReport();
 
-         byte[] pdfBytes = this.appPdfGenerationService.generateInvoice(Map.of());
+         // byte[] pdfBytes = this.appPdfGenerationService.generateInvoice(Map.of());
          
         // System.out.println(Arrays.toString(csvBytes));
 
-        UUID randomFileId = UUID.randomUUID();
         
-        this.fileUploadService.upload(randomFileId+".pdf", pdfBytes);
-        
-        
+        // String pdfUrl = this.fileUploadService.upload(pdfBytes, "pdf");
+        //
+        // System.out.println(pdfUrl);
         
     }
 }
