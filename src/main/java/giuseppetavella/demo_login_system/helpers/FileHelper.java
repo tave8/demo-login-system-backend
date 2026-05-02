@@ -3,9 +3,11 @@ package giuseppetavella.demo_login_system.helpers;
 import giuseppetavella.demo_login_system.exceptions.FileDownloadException;
 import giuseppetavella.demo_login_system.exceptions.UnknownFileTypeException;
 import org.apache.tika.Tika;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
@@ -99,6 +101,16 @@ public class FileHelper {
         }
 
         return MIME_TO_EXTENSION.get(mimeType);
+    }
+
+    /**
+     * Read a pdf into bytes.
+     */
+    public static byte[] readPdf(String filepath) throws IOException {
+        ClassPathResource resource = new ClassPathResource(filepath);
+        try (InputStream is = resource.getInputStream()) {
+            return is.readAllBytes();
+        }
     }
     
 }

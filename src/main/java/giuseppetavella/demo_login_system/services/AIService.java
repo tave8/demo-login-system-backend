@@ -13,6 +13,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class AIService {
@@ -20,7 +21,11 @@ public class AIService {
     @Value("${anthropic.api-key}")
     private String apiKey;
 
-    private final OkHttpClient http = new OkHttpClient();
+    private final OkHttpClient http = new OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS)
+                                                    .readTimeout(120, TimeUnit.SECONDS)  // PDFs take longer to process
+                                                    .writeTimeout(30, TimeUnit.SECONDS)
+                                                    .build();
+    
     private final ObjectMapper mapper = new ObjectMapper();
 
     private static final String ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
