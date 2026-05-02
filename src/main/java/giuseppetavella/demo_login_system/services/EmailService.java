@@ -33,7 +33,7 @@ public class EmailService {
      * 
      * @throws EmailSendingException if any problem occurred during email sending
      */
-    protected String sendEmail(String recipient, 
+    public String sendEmail(String recipient, 
                             String subject, 
                             String html,
                             List<EmailAttachment> attachments) throws EmailSendingException 
@@ -60,7 +60,7 @@ public class EmailService {
      * Send an email.
      * One attachment.
      */
-    protected String sendEmail(String recipient,
+    public String sendEmail(String recipient,
                                String subject,
                                String html,
                                EmailAttachment attachment) throws EmailSendingException
@@ -74,7 +74,7 @@ public class EmailService {
      * Send an email.
      * No attachments.
      */
-    protected String sendEmail(String recipient,
+    public String sendEmail(String recipient,
                             String subject,
                             String html) throws EmailSendingException
     {

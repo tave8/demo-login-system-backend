@@ -16,6 +16,12 @@
     GET /me               (get my profile)
     PUT /me                (update my profile)
     POST /me/avatar-image     (upload my new avatar image)
+
+/ai
+    /extract           
+        POST /cv            (extract a CV)
+                    
+    
     
 /articles
     GET /                  (get my articles)
@@ -131,6 +137,35 @@ Response
     message: str
 }
 ```
+
+
+## /ai
+
+
+### /extract
+
+
+### POST /cv
+
+Extract a CV
+
+Request 
+
+```
+multipart/form-data
+
+file=...
+```
+
+Response
+
+```
+json of CV
+```
+
+
+
+
 
 
 ## /users

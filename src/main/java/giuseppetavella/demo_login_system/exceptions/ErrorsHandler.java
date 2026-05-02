@@ -171,9 +171,9 @@ public class ErrorsHandler {
     @ExceptionHandler(MultipartException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorsToSendDTO handleRequestIsNotMultipartRequest(MultipartException ex) {
-        String msg = "L'endpoint si aspetta che questa richiesta sia multipart formdata, "
-                +"ma sembra che non lo sia. Puoi provare ad impostare gli header "
-                +"della richiesta con content type multipart formdata?";
+        String msg = "This endpoint expects the request to be multipart form-data, "
+                + "but it does not appear to be. Try setting the request headers "
+                + "with content type multipart form-data.";
         return new ErrorsToSendDTO(msg);
     }
 

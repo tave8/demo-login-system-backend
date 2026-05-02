@@ -42,7 +42,7 @@ public class FileUploadService implements FileUploader {
     @Override
     public String upload(byte[] bytes) throws FileUploadException, UnknownFileTypeException
     {
-        String fileExt = FileHelper.getExtensionFromBytes(bytes);
+        String fileExt = FileHelper.getFileType(bytes);
         return this.upload(bytes, fileExt);
     }
     

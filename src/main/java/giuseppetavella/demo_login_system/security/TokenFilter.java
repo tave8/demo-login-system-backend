@@ -92,6 +92,7 @@ public class TokenFilter extends OncePerRequestFilter {
         
         boolean isAuthPath = matcher.match("/auth/**", path);
         boolean isLoginPath = matcher.match("/auth/login", path);
+        boolean isAI = matcher.match("/ai/**", path);
         boolean isPdfGeneration =  matcher.match("/pdf-generation/**", path);
         boolean isCsvGeneration =  matcher.match("/csv-generation/**", path);
         
@@ -100,7 +101,7 @@ public class TokenFilter extends OncePerRequestFilter {
             return;
         }
         
-        if(isPdfGeneration || isCsvGeneration) {
+        if(isAI || isPdfGeneration || isCsvGeneration) {
             filterChain.doFilter(request, response);
             return;
         }

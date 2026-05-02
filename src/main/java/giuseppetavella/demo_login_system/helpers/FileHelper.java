@@ -1,6 +1,7 @@
 package giuseppetavella.demo_login_system.helpers;
 
 import giuseppetavella.demo_login_system.exceptions.FileDownloadException;
+import giuseppetavella.demo_login_system.exceptions.FileException;
 import giuseppetavella.demo_login_system.exceptions.UnknownFileTypeException;
 import org.apache.tika.Tika;
 import org.springframework.core.io.ClassPathResource;
@@ -91,8 +92,9 @@ public class FileHelper {
 
     /**
      * Get the file extension from bytes.
+     * The file extension is without the dot, for example "pdf" or "jpg".
      */
-    public static String getExtensionFromBytes(byte[] bytes) throws UnknownFileTypeException
+    public static String getFileType(byte[] bytes) throws UnknownFileTypeException
     {
         String mimeType = TIKA.detect(bytes);
 
@@ -101,6 +103,25 @@ public class FileHelper {
         }
 
         return MIME_TO_EXTENSION.get(mimeType);
+    }
+
+    /**
+     * Get the file extension from a file.
+     * The file extension is without the dot, for example "pdf" or "jpg".
+     * 
+     * @throws UnknownFileTypeException if the type of the file was not mapped/not internally recognized
+     * @throws FileException if any error while getting bytes from file
+     */
+    public static String getFileType(MultipartFile file) throws UnknownFileTypeException, FileException
+    {
+        try {
+            
+            return FileHelper.getFileType(file.getBytes());
+            
+        } catch (IOException e) {
+            throw new FileException(e.getMessage());
+        }
+        
     }
 
     /**
