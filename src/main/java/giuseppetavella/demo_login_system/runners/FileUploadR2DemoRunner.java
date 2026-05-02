@@ -1,5 +1,6 @@
 package giuseppetavella.demo_login_system.runners;
 
+import giuseppetavella.demo_login_system.helpers.FileHelper;
 import giuseppetavella.demo_login_system.services.AppCsvGenerationService;
 import giuseppetavella.demo_login_system.services.AppPdfGenerationService;
 import giuseppetavella.demo_login_system.services.FileUploadService;
@@ -26,16 +27,16 @@ public class FileUploadR2DemoRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-         // byte[] csvBytes = this.appCsvGenerationService.generateArticlesReport();
-
-         // byte[] pdfBytes = this.appPdfGenerationService.generateInvoice(Map.of());
-         
-        // System.out.println(Arrays.toString(csvBytes));
-
-        
+        //  byte[] csvBytes = this.appCsvGenerationService.generateArticlesReport();
+        //
+        //  byte[] pdfBytes = this.appPdfGenerationService.generateInvoice(Map.of());
+        // 
+        // 
         // String pdfUrl = this.fileUploadService.upload(pdfBytes, "pdf");
         //
         // System.out.println(pdfUrl);
+
+        
         
     }
 }

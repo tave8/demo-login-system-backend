@@ -1,14 +1,27 @@
 package giuseppetavella.demo_login_system.helpers;
 
 import giuseppetavella.demo_login_system.exceptions.FileDownloadException;
+import giuseppetavella.demo_login_system.exceptions.UnknownFileTypeException;
+import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
+import java.util.Map;
 
 public class FileHelper {
+
+    private static final Map<String, String> MIME_TO_EXTENSION = Map.of(
+            "application/pdf",  "pdf",
+            "text/csv",         "csv",
+            "image/png",        "png",
+            "image/jpeg",       "jpg"
+    );
+
+    // dependency to extract file extension from bytes
+    private static final Tika TIKA = new Tika();
 
     // 1 MB
     public static final long MB = 1024 * 1024;
@@ -72,6 +85,20 @@ public class FileHelper {
             throw new FileDownloadException(ex.getMessage());
         }
         
+    }
+
+    /**
+     * Get the file extension from bytes.
+     */
+    public static String getExtensionFromBytes(byte[] bytes) throws UnknownFileTypeException
+    {
+        String mimeType = TIKA.detect(bytes);
+
+        if (!MIME_TO_EXTENSION.containsKey(mimeType)) {
+            throw new UnknownFileTypeException(mimeType);
+        }
+
+        return MIME_TO_EXTENSION.get(mimeType);
     }
     
 }

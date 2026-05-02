@@ -1,6 +1,9 @@
 package giuseppetavella.demo_login_system.services;
 
 import giuseppetavella.demo_login_system.exceptions.FileUploadException;
+import giuseppetavella.demo_login_system.exceptions.UnknownFileTypeException;
+import giuseppetavella.demo_login_system.helpers.FileHelper;
+import giuseppetavella.demo_login_system.interfaces.FileUploader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,7 +15,7 @@ import java.util.UUID;
 
 
 @Service
-public class FileUploadService {
+public class FileUploadService implements FileUploader {
 
     @Autowired
     private S3Client s3Client;
@@ -33,10 +36,21 @@ public class FileUploadService {
     }
 
     /**
+     * Use this when you cannot possibly determine
+     * the file extension.
+     */
+    @Override
+    public String upload(byte[] bytes) throws FileUploadException, UnknownFileTypeException
+    {
+        String fileExt = FileHelper.getExtensionFromBytes(bytes);
+        return this.upload(bytes, fileExt);
+    }
+    
+    /**
      * Upload a file.
      * Return the file public URL.
      * 
-     * @param fileExt the file extension, for example "pdf"
+     * @param fileExt the file extension, for example "pdf" (without dot)
      */
     public String upload(byte[] bytes, String fileExt) throws FileUploadException
     {
@@ -58,6 +72,9 @@ public class FileUploadService {
         return this.buildFileUrlFrom(filename);
         
     }
+    
+    
+    // public String upload
     
     
     private String buildFileUrlFrom(String filename) {
