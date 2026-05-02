@@ -3,6 +3,7 @@ package giuseppetavella.demo_login_system.services;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.EmailSendingException;
 import giuseppetavella.demo_login_system.models.EmailAttachment;
+import giuseppetavella.demo_login_system.models.EmailAttachmentFromURL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -71,26 +72,36 @@ public class AppEmailService extends EmailService {
     /**
      * Send articles report email.
      */
-    public void sendArticlesReport(User user, byte[] articlesReportCsv) throws EmailSendingException 
-    {
+    // public void sendArticlesReport(User user, byte[] articlesReportCsv) throws EmailSendingException 
+    // {
+    //
+    //     Context context = new Context();
+    //     context.setVariable("firstname", user.getFirstname());
+    //
+    //     String htmlBody = templateEngine.process("emails/articles_report", context);
+    //    
+    //     EmailAttachment attachment = new EmailAttachment(
+    //             articlesReportCsv, 
+    //             "articles_report.csv"
+    //     );
+    //
+    //     this.sendEmail(
+    //             user.getEmail(), 
+    //             "Articles Report", 
+    //             htmlBody, 
+    //             attachment
+    //     );
+    // }
+    
 
-        Context context = new Context();
-        context.setVariable("firstname", user.getFirstname());
-
-        String htmlBody = templateEngine.process("emails/articles_report", context);
-        
-        EmailAttachment attachment = new EmailAttachment(
-                articlesReportCsv, 
-                "articles_report.csv"
-        );
-
-        this.sendEmail(
-                user.getEmail(), 
-                "Articles Report", 
-                htmlBody, 
-                attachment
-        );
-    }
-
+    // public void sendPdf(String recipient, String pdfUrl)
+    // {
+    //     this.sendEmail(
+    //             recipient,
+    //             "Here's your pdf",
+    //             "Hello",
+    //             new EmailAttachmentFromURL(pdfUrl, "pdf_from_internet.pdf")
+    //     );
+    // }
 
 }

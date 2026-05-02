@@ -20,6 +20,33 @@ public class MediaUploadService implements FileUploader {
 
 
     /**
+     * Upload bytes to the file upload cloud provider.
+     */
+    @Override
+    public String upload(byte[] bytes) throws FileUploadException, 
+                                              InvalidFileUploadedException
+    {
+
+        // if there are no bytes = the file is empty
+        if (bytes.length == 0) {
+            throw new InvalidFileUploadedException("The byte array uploaded cannot be empty. The file is empty?");
+        }
+
+        try {
+            Map result = cloudinaryUploader
+                    .uploader()
+                    .upload(bytes, Map.of());
+
+            return (String) result.get("secure_url");
+
+        } catch (IOException | RuntimeException ex) {
+            throw new FileUploadException(ex.getMessage());
+        }
+    }
+
+
+
+    /**
      * Upload a file.
      *
      * @return the URL of the uploaded file
@@ -42,42 +69,7 @@ public class MediaUploadService implements FileUploader {
         }
 
     }
-
-    /**
-     * Upload a byte array.
-     *
-     * @return the URL of the uploaded file
-     */
-    public String uploadFile(byte[] bytes) throws InvalidFileUploadedException, 
-                                                   FileUploadException 
-    {
-        
-        // if there are no bytes = the file is empty
-        if (bytes.length == 0) {
-            throw new InvalidFileUploadedException("The byte array uploaded cannot be empty. The file is empty?");
-        }
-
-        return this.upload(bytes);
-
-    }
-
-    /**
-     * Upload bytes to the file upload cloud provider.
-     */
-    @Override
-    public String upload(byte[] bytes) throws FileUploadException
-    {
-        try {
-            Map result = cloudinaryUploader
-                    .uploader()
-                    .upload(bytes, Map.of());
-
-            return (String) result.get("secure_url");
-
-        } catch (IOException | RuntimeException ex) {
-            throw new FileUploadException(ex.getMessage());
-        }
-    }
     
+
 
 }

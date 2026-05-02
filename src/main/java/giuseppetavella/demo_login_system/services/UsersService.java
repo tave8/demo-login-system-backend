@@ -129,15 +129,8 @@ public class UsersService {
                                                                                  FileUploadException
     {
         
-        // if image is too big
-        if(!FileHelper.isWithinAvatarSize(avatarImage)) {
-            throw new InvalidFileUploadedException("The file uploaded ("
-                                                        +FileHelper.getFileSizeInMB(avatarImage)
-                                                        +"MB) is too big. Max file size is 2MB.");
-        }
-        
         // get URL of uploaded image
-        String avatarUrl = this.imageUploadService.uploadImage(avatarImage);
+        String avatarUrl = this.imageUploadService.uploadAvatarImage(avatarImage);
 
         // update author
         user.setAvatarUrl(avatarUrl);
