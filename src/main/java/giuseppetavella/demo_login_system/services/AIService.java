@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +69,66 @@ public class AIService {
             throw ex;
         } catch (Exception ex) {
             throw new AIException("Failed to call Anthropic API. DETAILS: " + ex.getMessage());
+        }
+    }
+
+
+    /**
+     * Send a PDF and a prompt, get a text response.
+     */
+    public String askWithPdf(byte[] pdfBytes, String prompt) throws AIException {
+        try {
+            String base64Pdf = Base64.getEncoder().encodeToString(pdfBytes);
+
+            Map<String, Object> body = Map.of(
+                    "model", MODEL,
+                    "max_tokens", MAX_TOKENS,
+                    "messages", List.of(Map.of(
+                            "role", "user",
+                            "content", List.of(
+                                    Map.of(
+                                            "type", "document",
+                                            "source", Map.of(
+                                                    "type", "base64",
+                                                    "media_type", "application/pdf",
+                                                    "data", base64Pdf
+                                            )
+                                    ),
+                                    Map.of(
+                                            "type", "text",
+                                            "text", prompt
+                                    )
+                            )
+                    ))
+            );
+
+            Request request = new Request.Builder()
+                    .url(ANTHROPIC_URL)
+                    .post(RequestBody.create(
+                            MediaType.parse("application/json"),
+                            mapper.writeValueAsString(body)
+                    ))
+                    .addHeader("x-api-key", apiKey)
+                    .addHeader("anthropic-version", ANTHROPIC_VERSION)
+                    .addHeader("content-type", "application/json")
+                    .build();
+
+            try (Response response = http.newCall(request).execute()) {
+                String responseBody = response.body().string();
+
+                if (!response.isSuccessful()) {
+                    throw new AIException("Anthropic API error: " + responseBody);
+                }
+
+                Map<String, Object> parsed = mapper.readValue(responseBody, Map.class);
+                List<Map<String, Object>> content = (List<Map<String, Object>>) parsed.get("content");
+                return (String) content.get(0).get("text");
+            }
+
+        } catch (AIException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new AIException("Failed to call Anthropic API with PDF. DETAILS: " + ex.getMessage());
         }
     }
 
