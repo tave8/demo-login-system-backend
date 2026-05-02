@@ -13,24 +13,24 @@ public class AppPdfGenerationService extends PdfGenerationService {
     /**
      * Upload an invoice.
      */
-    public String uploadInvoice(Map<String, Object> vars) throws PdfGenerationException, 
-                                                                 InvalidFileUploadedException,
-                                                                 FileUploadException
-    {
-        
-        return this.pdfToUpload("business/invoice", vars);
-        
-    }
+    // public String uploadInvoice(Map<String, Object> vars) throws PdfGenerationException, 
+    //                                                              InvalidFileUploadedException,
+    //                                                              FileUploadException
+    // {
+    //    
+    //     return this.pdfToUpload("business/invoice", vars);
+    //    
+    // }
 
     /**
      * Save an invoice locally.
      */
-    public void saveInvoiceLocal(Map<String, Object> vars, String filename) throws PdfGenerationException
-    {
-
-        this.pdfToSaveLocal("business/invoice", vars, "/output", filename);
-
-    }
+    // public void saveInvoiceLocal(Map<String, Object> vars, String filename) throws PdfGenerationException
+    // {
+    //
+    //     this.pdfToSaveLocal("business/invoice", vars, "/output", filename);
+    //
+    // }
     
 
     /**
@@ -41,6 +41,13 @@ public class AppPdfGenerationService extends PdfGenerationService {
         
         return this.pdfToBase64("business/invoice", vars);
         
+    }
+
+    public byte[] generateInvoice(Map<String, Object> vars) throws PdfGenerationException
+    {
+
+        return this.pdfToBytes("business/invoice", vars);
+
     }
 
 }
