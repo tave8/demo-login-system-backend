@@ -319,6 +319,49 @@ Article
 ```
 
 
+
+# Custom Authorization System (multi-tenant)
+
+
+```
+
+companies
+
+admins
+
+normal users
+
+custom roles 
+
+pages
+
+actions
+ 
+----- 
+
+1 company --has--> N users
+
+1 user --associated to--> 1 company
+
+1 admin --creates--> N custom roles
+
+1 custom role --assigned to--> N normal users
+
+1 normal user --is assigned--> 1 custom role
+
+1 page --has--> N actions
+
+1 action --associated to--> 1 page
+
+1 custom role --associated to--> N pages
+
+1 custom role --associated to--> N actions
+
+
+```
+
+
+
 # Forgot password
 
 Here I discuss the Forgot Password mechanism.
