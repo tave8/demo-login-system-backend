@@ -3,6 +3,7 @@ package giuseppetavella.demo_login_system.services.base;
 import giuseppetavella.demo_login_system.enums.internal.BrowserContentDispositionHeader;
 import giuseppetavella.demo_login_system.exceptions.PdfGenerationException;
 import giuseppetavella.demo_login_system.helpers.FileHelper;
+import giuseppetavella.demo_login_system.services.file_generators.HtmlTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,8 @@ import java.util.Map;
 @Service
 public class PdfService {
 
-
     @Autowired
-    private TemplateEngine templateEngine;
-    
-    // @Autowired
-    // private MediaUploadService mediaUploadService;
+    private HtmlTemplateService htmlTemplateService;
     
     
     /**
@@ -37,57 +34,30 @@ public class PdfService {
                                                         BrowserContentDispositionHeader contentDispositionHeader) 
     {
         // template -> html
-        String html = this.templateToHtml(template, vars);
+        String html = this.htmlTemplateService.fillTemplate(template, vars);
         // html -> pdf
-        ByteArrayOutputStream baos = this.htmlToPdf(html);
+        byte[] bytes = this.htmlToPdf(html);
         // pdf -> http response
-        return this.pdfToHttpResponse(baos, outputFilename, contentDispositionHeader);
+        return this.pdfToHttpResponse(bytes, outputFilename, contentDispositionHeader);
     }
 
     
     /**
      * template + vars -> PDF
-     * TODO: no bytearrayoutputstream, at most bytes 
      */
-    protected ByteArrayOutputStream templateToPdf(String template,
-                                               Map<String, Object> vars) throws PdfGenerationException
+    protected byte[] templateToPdf(String template, Map<String, Object> vars) throws PdfGenerationException
     {
         // template -> html 
-        String html = this.templateToHtml(template, vars);
+        String html = this.htmlTemplateService.fillTemplate(template, vars);
         // html -> pdf 
         return this.htmlToPdf(html);
     }
     
-
     
-    /**
-     * template + vars -> HTML
-     */
-    protected String templateToHtml(String template, Map<String, Object> vars) throws PdfGenerationException 
-    {
-        
-        Context ctx = new Context();
-        
-        // fill the template with the given vars
-        for(String var : vars.keySet()) {
-            ctx.setVariable(var, vars.get(var));
-        }
-
-        try {
-            
-            return this.templateEngine.process(template, ctx);
-            
-        } catch (TemplateEngineException ex) {
-            throw new PdfGenerationException("Failed to render template: " + template + " DETAILS: " + ex.getMessage());
-        }
-
-    }
-    
-
     /**
      * HTML -> PDF
      */
-    protected ByteArrayOutputStream htmlToPdf(String html) throws PdfGenerationException 
+    protected byte[] htmlToPdf(String html) throws PdfGenerationException 
     {
         // Generate PDF into memory
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -98,7 +68,7 @@ public class PdfService {
             renderer.setDocumentFromString(html, null);
             renderer.layout();
             renderer.createPDF(baos);
-            return baos;
+            return baos.toByteArray();
             
         } catch (Exception ex) {
             
@@ -113,25 +83,24 @@ public class PdfService {
     /**
      * PDF -> HTTP response entity
      */
-    protected ResponseEntity<byte[]> pdfToHttpResponse(ByteArrayOutputStream baos, 
+    protected ResponseEntity<byte[]> pdfToHttpResponse(byte[] pdf, 
                                                          String outputFilename,
                                                          BrowserContentDispositionHeader contentDispositionHeader) 
     {
-
-        byte[] pdf = baos.toByteArray();
-
+        
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDispositionFormData(contentDispositionHeader.getValue(), outputFilename);
 
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
+    
 
 
     /**
-     * 
+     *
      * PDF -> upload
-     * 
+     *
      * @return URL of uploaded file
      */
     // protected String pdfToUpload(String template, Map<String, Object> vars) throws PdfGenerationException, 
@@ -143,23 +112,6 @@ public class PdfService {
     //     return this.mediaUploadService.uploadFile(byteArray);
     // }
 
-
-    /**
-     * template + vars -> base64
-     */
-    protected String pdfToBase64(String template, Map<String, Object> vars) throws PdfGenerationException
-    {
-        byte[] bytes = this.templateToPdf(template, vars).toByteArray();
-        return FileHelper.toBase64(bytes);
-    }
-
-    /**
-     * template + vars -> bytes
-     */
-    protected byte[] pdfToBytes(String template, Map<String, Object> vars) throws PdfGenerationException
-    {
-        return this.templateToPdf(template, vars).toByteArray();
-    }
     
 
     /**

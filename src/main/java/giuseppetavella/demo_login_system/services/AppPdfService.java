@@ -37,7 +37,7 @@ public class AppPdfService extends PdfService {
     {
 
         return new Pdf(
-                this.pdfToBytes("business/invoice", vars)
+                this.templateToPdf("business/invoice", vars)
         );
 
     }

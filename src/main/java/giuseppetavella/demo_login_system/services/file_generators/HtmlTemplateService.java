@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.exceptions.TemplateEngineException;
 import org.thymeleaf.exceptions.TemplateInputException;
 
 import java.util.Map;
@@ -42,7 +43,12 @@ public class HtmlTemplateService {
 
             throw new HtmlTemplateException("This template does not seem to exist. DETAILS: " + ex.getMessage());
 
-        }
+        } catch(TemplateEngineException ex) {
+
+            throw new HtmlTemplateException("While filling a html template, a generic error "
+                                    +"specific to the template engine occurred. DETAILS: " + ex.getMessage());
+            
+        } 
 
     }
     

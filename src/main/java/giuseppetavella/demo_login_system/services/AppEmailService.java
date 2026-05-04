@@ -25,7 +25,7 @@ public class AppEmailService extends EmailService {
  
     
     @Autowired
-    private AppPdfService appPdfGenerationService;
+    private AppPdfService appPdfService;
 
     private final String serverUrl;
 
@@ -129,19 +129,22 @@ public class AppEmailService extends EmailService {
         // BUILD THE PDF
         // *****************
         
-        // generate pdf
+        // build the hashmap that gets passed to the html template
+        // that will be turned into pdf
         Map<String, Object> pdfVars = Map.of();
         
         // generate email attachment from pdf
         EmailAttachment attachment = new EmailAttachment(
-                this.appPdfGenerationService.generateInvoice(pdfVars).toAttachment(),
+                this.appPdfService.generateInvoice(pdfVars).toAttachment(),
                 "invoice_report.pdf"
         );
         
         // *****************
         // BUILD THE EMAIL
         // **************
-        
+
+        // build the hashmap that gets passed to the html template
+        // that will be sent as email
         Map<String, Object> vars = Map.of(
                 "firstname", "Giuseppe",
                 "timeSent", OffsetDateTime.now()
