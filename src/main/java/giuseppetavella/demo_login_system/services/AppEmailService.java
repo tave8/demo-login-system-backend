@@ -5,11 +5,14 @@ import giuseppetavella.demo_login_system.exceptions.EmailSendingException;
 import giuseppetavella.demo_login_system.models.EmailAttachment;
 import giuseppetavella.demo_login_system.models.EmailAttachmentFromURL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Send business-specific emails.
@@ -21,9 +24,19 @@ import java.util.List;
  */
 @Service
 public class AppEmailService extends EmailService {
-
+    
     @Autowired
     private TemplateEngine templateEngine;
+    
+    @Autowired
+    private AppPdfGenerationService appPdfGenerationService;
+
+    private final String serverUrl;
+
+    public AppEmailService(@Qualifier("serverUrl") String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
+
 
     /**
      * Send welcome email on signup.
@@ -102,6 +115,37 @@ public class AppEmailService extends EmailService {
                 "Hello",
                 new EmailAttachmentFromURL(pdfUrl, "pdf_from_internet.pdf")
         );
+    }
+    
+    public void sendMeInvoiceReport() {
+        
+        // *****************
+        // BUILD THE PDF
+        // *****************
+        
+        // generate pdf
+        byte[] pdf = this.appPdfGenerationService.generateInvoice(Map.of());
+        
+        // generate email attachment from pdf
+        EmailAttachment attachment = new EmailAttachment(pdf, "invoice_report.pdf");
+        
+        // *****************
+        // BUILD THE EMAIL
+        // **************
+        
+        Map<String, Object> vars = Map.of(
+                "firstname", "Giuseppe",
+                "timeSent", OffsetDateTime.now()
+        );
+        
+        this.sendEmailFromTemplate(
+                "emails/invoice_report", 
+                vars,
+                "giuseppetavella8@gmail.com",
+                "Your Invoice Report",
+                attachment
+        );
+        
     }
 
 }
