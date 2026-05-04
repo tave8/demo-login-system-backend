@@ -17,7 +17,7 @@ public class AppCsvGenerationService extends CsvGenerationService {
     @Autowired
     private ArticlesService articlesService;
     
-    
+    // this should return a Csv instance
     public byte[] generateArticlesReport() {
         
         List<Article> articles = this.articlesService.findAll();

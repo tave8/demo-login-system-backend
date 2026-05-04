@@ -132,10 +132,13 @@ public class AppEmailService extends EmailService {
         // *****************
         
         // generate pdf
-        byte[] pdf = this.appPdfGenerationService.generateInvoice(Map.of());
+        Map<String, Object> pdfVars = Map.of();
         
         // generate email attachment from pdf
-        EmailAttachment attachment = new EmailAttachment(pdf, "invoice_report.pdf");
+        EmailAttachment attachment = new EmailAttachment(
+                this.appPdfGenerationService.generateInvoice(pdfVars).toAttachment(),
+                "invoice_report.pdf"
+        );
         
         // *****************
         // BUILD THE EMAIL

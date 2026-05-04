@@ -3,6 +3,7 @@ package giuseppetavella.demo_login_system.services;
 import giuseppetavella.demo_login_system.exceptions.FileUploadException;
 import giuseppetavella.demo_login_system.exceptions.InvalidFileUploadedException;
 import giuseppetavella.demo_login_system.exceptions.PdfGenerationException;
+import giuseppetavella.demo_login_system.models.Pdf;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -33,10 +34,12 @@ public class AppPdfGenerationService extends PdfGenerationService {
     // }
     
 
-    public byte[] generateInvoice(Map<String, Object> vars) throws PdfGenerationException
+    public Pdf generateInvoice(Map<String, Object> vars) throws PdfGenerationException
     {
 
-        return this.pdfToBytes("business/invoice", vars);
+        return new Pdf(
+                this.pdfToBytes("business/invoice", vars)
+        );
 
     }
 
