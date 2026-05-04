@@ -1,14 +1,9 @@
 package giuseppetavella.demo_login_system.controllers;
 
-import giuseppetavella.demo_login_system.services.AppCsvGenerationService;
-import giuseppetavella.demo_login_system.services.AppPdfGenerationService;
+import giuseppetavella.demo_login_system.services.AppCsvService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 
 @RestController
@@ -16,7 +11,7 @@ import java.util.Map;
 public class CsvGenerationController {
 
     @Autowired
-    private AppCsvGenerationService appCsvGenerationService;
+    private AppCsvService appCsvGenerationService;
     
     // @PostMapping("/upload-invoice")
     // public String uploadInvoice() {

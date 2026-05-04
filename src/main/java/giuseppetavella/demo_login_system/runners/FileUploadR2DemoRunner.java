@@ -1,17 +1,12 @@
 package giuseppetavella.demo_login_system.runners;
 
-import giuseppetavella.demo_login_system.helpers.FileHelper;
-import giuseppetavella.demo_login_system.services.AppCsvGenerationService;
+import giuseppetavella.demo_login_system.services.AppCsvService;
 import giuseppetavella.demo_login_system.services.AppEmailService;
-import giuseppetavella.demo_login_system.services.AppPdfGenerationService;
-import giuseppetavella.demo_login_system.services.FileUploadService;
+import giuseppetavella.demo_login_system.services.AppPdfService;
+import giuseppetavella.demo_login_system.services.base.FileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.Map;
-import java.util.UUID;
 
 @Component
 public class FileUploadR2DemoRunner implements CommandLineRunner {
@@ -20,10 +15,10 @@ public class FileUploadR2DemoRunner implements CommandLineRunner {
     private FileUploadService fileUploadService;
     
     @Autowired
-    private AppCsvGenerationService appCsvGenerationService;
+    private AppCsvService appCsvGenerationService;
     
     @Autowired
-    private AppPdfGenerationService appPdfGenerationService;
+    private AppPdfService appPdfGenerationService;
     
     @Autowired
     private AppEmailService appEmailService;

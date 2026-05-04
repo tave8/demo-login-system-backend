@@ -1,22 +1,16 @@
 package giuseppetavella.demo_login_system.services;
 
-import com.cloudinary.Cloudinary;
-import giuseppetavella.demo_login_system.entities.Article;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.*;
-import giuseppetavella.demo_login_system.helpers.FileHelper;
 import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO;
-import giuseppetavella.demo_login_system.payloads.in_request.UpdatedArticleSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.UpdatedProfileSentDTO;
-import giuseppetavella.demo_login_system.payloads.in_response.ProfileToSendDTO;
 import giuseppetavella.demo_login_system.repositories.UsersRepository;
+import giuseppetavella.demo_login_system.services.base.ImageUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Map;
 import java.util.UUID;
 
 @Service

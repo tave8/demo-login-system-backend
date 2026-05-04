@@ -1,4 +1,4 @@
-package giuseppetavella.demo_login_system.services;
+package giuseppetavella.demo_login_system.services.base;
 
 import com.cloudinary.Cloudinary;
 import giuseppetavella.demo_login_system.exceptions.FileUploadException;

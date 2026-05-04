@@ -1,4 +1,4 @@
-package giuseppetavella.demo_login_system.services;
+package giuseppetavella.demo_login_system.services.base;
 
 import giuseppetavella.demo_login_system.entities.ForgotPasswordCode;
 import giuseppetavella.demo_login_system.entities.User;
@@ -8,14 +8,14 @@ import giuseppetavella.demo_login_system.exceptions.NotFoundException;
 import giuseppetavella.demo_login_system.helpers.TimeHelper;
 import giuseppetavella.demo_login_system.repositories.ForgotPasswordRepository;
 import giuseppetavella.demo_login_system.repositories.UsersRepository;
-import giuseppetavella.demo_login_system.security.TokenTools;
+import giuseppetavella.demo_login_system.services.AppEmailService;
+import giuseppetavella.demo_login_system.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 

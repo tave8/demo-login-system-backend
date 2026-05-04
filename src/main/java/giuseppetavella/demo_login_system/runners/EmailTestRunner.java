@@ -1,17 +1,11 @@
 package giuseppetavella.demo_login_system.runners;
 
-import giuseppetavella.demo_login_system.entities.User;
-import giuseppetavella.demo_login_system.models.EmailAttachment;
-import giuseppetavella.demo_login_system.models.EmailAttachmentFromURL;
 import giuseppetavella.demo_login_system.services.AppEmailService;
-import giuseppetavella.demo_login_system.services.AppPdfGenerationService;
-import giuseppetavella.demo_login_system.services.EmailService;
+import giuseppetavella.demo_login_system.services.AppPdfService;
+import giuseppetavella.demo_login_system.services.base.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class EmailTestRunner implements CommandLineRunner {
@@ -23,7 +17,7 @@ public class EmailTestRunner implements CommandLineRunner {
     private AppEmailService appEmailService;
     
     @Autowired
-    private AppPdfGenerationService appPdfGenerationService;
+    private AppPdfService appPdfGenerationService;
 
     @Override
     public void run(String... args) throws Exception {

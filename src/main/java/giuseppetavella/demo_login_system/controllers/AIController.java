@@ -2,10 +2,8 @@ package giuseppetavella.demo_login_system.controllers;
 
 import giuseppetavella.demo_login_system.CvData;
 import giuseppetavella.demo_login_system.helpers.PayloadValidationHelper;
-import giuseppetavella.demo_login_system.models.EmailAttachment;
-import giuseppetavella.demo_login_system.services.AIService;
 import giuseppetavella.demo_login_system.services.AppAIService;
-import giuseppetavella.demo_login_system.services.EmailService;
+import giuseppetavella.demo_login_system.services.base.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

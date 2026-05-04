@@ -1,8 +1,6 @@
-package giuseppetavella.demo_login_system.services;
+package giuseppetavella.demo_login_system.services.base;
 
 import giuseppetavella.demo_login_system.enums.internal.BrowserContentDispositionHeader;
-import giuseppetavella.demo_login_system.exceptions.FileUploadException;
-import giuseppetavella.demo_login_system.exceptions.InvalidFileUploadedException;
 import giuseppetavella.demo_login_system.exceptions.PdfGenerationException;
 import giuseppetavella.demo_login_system.helpers.FileHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,7 @@ import java.io.*;
 import java.util.Map;
 
 @Service
-public class PdfGenerationService {
+public class PdfService {
 
 
     @Autowired
@@ -49,6 +47,7 @@ public class PdfGenerationService {
     
     /**
      * template + vars -> PDF
+     * TODO: no bytearrayoutputstream, at most bytes 
      */
     protected ByteArrayOutputStream templateToPdf(String template,
                                                Map<String, Object> vars) throws PdfGenerationException

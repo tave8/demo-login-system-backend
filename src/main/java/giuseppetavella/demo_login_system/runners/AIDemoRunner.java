@@ -1,10 +1,7 @@
 package giuseppetavella.demo_login_system.runners;
 
-import giuseppetavella.demo_login_system.CvData;
-import giuseppetavella.demo_login_system.helpers.FileHelper;
-import giuseppetavella.demo_login_system.services.AIService;
 import giuseppetavella.demo_login_system.services.AppAIService;
-import giuseppetavella.demo_login_system.services.AppPdfGenerationService;
+import giuseppetavella.demo_login_system.services.AppPdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -17,7 +14,7 @@ public class AIDemoRunner implements CommandLineRunner {
     private AppAIService appAIService;
     
     @Autowired
-    private AppPdfGenerationService appPdfGenerationService;
+    private AppPdfService appPdfGenerationService;
     
     private final ObjectMapper mapper = new ObjectMapper();
     

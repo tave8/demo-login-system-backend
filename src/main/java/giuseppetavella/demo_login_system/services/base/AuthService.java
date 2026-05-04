@@ -1,6 +1,5 @@
-package giuseppetavella.demo_login_system.services;
+package giuseppetavella.demo_login_system.services.base;
 
-import giuseppetavella.demo_login_system.entities.EmailVerificationCode;
 import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
 import giuseppetavella.demo_login_system.exceptions.NotFoundException;
@@ -9,19 +8,12 @@ import giuseppetavella.demo_login_system.payloads.in_request.LoginSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_request.RegistrationSentDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterLoginDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterRegistrationDTO;
-import giuseppetavella.demo_login_system.repositories.EmailVerificationRepository;
-import giuseppetavella.demo_login_system.repositories.UsersRepository;
 import giuseppetavella.demo_login_system.security.TokenTools;
+import giuseppetavella.demo_login_system.services.AppEmailService;
+import giuseppetavella.demo_login_system.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-
-import java.time.OffsetDateTime;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthService {

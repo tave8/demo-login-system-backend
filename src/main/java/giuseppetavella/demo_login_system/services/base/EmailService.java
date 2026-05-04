@@ -1,4 +1,4 @@
-package giuseppetavella.demo_login_system.services;
+package giuseppetavella.demo_login_system.services.base;
 
 import com.resend.Resend;
 import com.resend.core.exception.ResendException;
@@ -8,6 +8,7 @@ import com.resend.services.emails.model.CreateEmailResponse;
 import giuseppetavella.demo_login_system.exceptions.HtmlTemplateException;
 import giuseppetavella.demo_login_system.models.EmailAttachment;
 import giuseppetavella.demo_login_system.exceptions.EmailSendingException;
+import giuseppetavella.demo_login_system.services.file_generators.HtmlTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

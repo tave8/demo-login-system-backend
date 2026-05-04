@@ -1,13 +1,8 @@
 package giuseppetavella.demo_login_system.controllers;
 
-import giuseppetavella.demo_login_system.enums.internal.BrowserContentDispositionHeader;
-import giuseppetavella.demo_login_system.services.AppPdfGenerationService;
-import giuseppetavella.demo_login_system.services.PdfGenerationService;
+import giuseppetavella.demo_login_system.services.AppPdfService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 
 @RestController
@@ -15,7 +10,7 @@ import java.util.Map;
 public class PdfGenerationController {
 
     @Autowired
-    private AppPdfGenerationService appPdfGenerationService;
+    private AppPdfService appPdfGenerationService;
     
     // @PostMapping("/upload-invoice")
     // public String uploadInvoice() {

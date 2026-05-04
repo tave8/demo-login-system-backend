@@ -1,7 +1,7 @@
 package giuseppetavella.demo_login_system.controllers;
 
 
-// import giuseppetavella.demo_login_system.services.AuthService;
+// import giuseppetavella.demo_login_system.services.base.AuthService;
 import giuseppetavella.demo_login_system.exceptions.EmailVerificationException;
 import giuseppetavella.demo_login_system.exceptions.ForgotPasswordVerificationException;
 import giuseppetavella.demo_login_system.exceptions.InvalidUUIDStringException;
@@ -16,10 +16,9 @@ import giuseppetavella.demo_login_system.payloads.in_request.forgot_password.Ver
 import giuseppetavella.demo_login_system.payloads.in_response.AfterLoginDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.AfterRegistrationDTO;
 import giuseppetavella.demo_login_system.payloads.in_response.forgot_password.ForgotPasswordToSendDTO;
-import giuseppetavella.demo_login_system.services.AuthService;
-import giuseppetavella.demo_login_system.services.EmailVerificationService;
-import giuseppetavella.demo_login_system.services.ForgotPasswordService;
-import giuseppetavella.demo_login_system.services.UsersService;
+import giuseppetavella.demo_login_system.services.base.AuthService;
+import giuseppetavella.demo_login_system.services.base.EmailVerificationService;
+import giuseppetavella.demo_login_system.services.base.ForgotPasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;

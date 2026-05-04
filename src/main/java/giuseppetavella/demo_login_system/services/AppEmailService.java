@@ -4,14 +4,12 @@ import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.exceptions.EmailSendingException;
 import giuseppetavella.demo_login_system.models.EmailAttachment;
 import giuseppetavella.demo_login_system.models.EmailAttachmentFromURL;
+import giuseppetavella.demo_login_system.services.base.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,7 +25,7 @@ public class AppEmailService extends EmailService {
  
     
     @Autowired
-    private AppPdfGenerationService appPdfGenerationService;
+    private AppPdfService appPdfGenerationService;
 
     private final String serverUrl;
 

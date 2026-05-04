@@ -1,4 +1,4 @@
-package giuseppetavella.demo_login_system.services;
+package giuseppetavella.demo_login_system.services.file_generators;
 
 import giuseppetavella.demo_login_system.exceptions.HtmlTemplateException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,12 +6,12 @@ import giuseppetavella.demo_login_system.exceptions.FileException;
 import giuseppetavella.demo_login_system.exceptions.PayloadValidationException;
 import giuseppetavella.demo_login_system.exceptions.UnknownFileTypeException;
 import giuseppetavella.demo_login_system.helpers.PayloadValidationHelper;
+import giuseppetavella.demo_login_system.services.base.AIService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Business-specific AI-powered features.

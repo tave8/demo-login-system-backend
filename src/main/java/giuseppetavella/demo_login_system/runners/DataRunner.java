@@ -1,8 +1,6 @@
 package giuseppetavella.demo_login_system.runners;
 
 
-import giuseppetavella.demo_login_system.entities.Article;
-import giuseppetavella.demo_login_system.entities.User;
 import giuseppetavella.demo_login_system.services.ArticlesService;
 import giuseppetavella.demo_login_system.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
