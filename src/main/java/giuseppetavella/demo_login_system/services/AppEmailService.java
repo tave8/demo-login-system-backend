@@ -24,9 +24,7 @@ import java.util.Map;
  */
 @Service
 public class AppEmailService extends EmailService {
-    
-    @Autowired
-    private TemplateEngine templateEngine;
+ 
     
     @Autowired
     private AppPdfGenerationService appPdfGenerationService;
@@ -57,13 +55,18 @@ public class AppEmailService extends EmailService {
     public void sendVerifyEmail(User user, String verificationUrl) throws EmailSendingException
     {
         
-        Context context = new Context();
-        context.setVariable("firstname", user.getFirstname());
-        context.setVariable("verificationUrl", verificationUrl);
-
-        String htmlBody = templateEngine.process("emails/verify_email", context);
-
-        this.sendEmail(user.getEmail(), "Verify your email", htmlBody);
+        Map<String, Object> vars = Map.of(
+            "firstname", user.getFirstname(),
+            "verificationUrl", verificationUrl
+        );
+        
+        this.sendEmailFromTemplate(
+                "emails/verify_email",
+                vars,
+                user.getEmail(),
+                "Verify your email"
+        );
+        
     }
 
 
@@ -73,12 +76,17 @@ public class AppEmailService extends EmailService {
     public void sendForgotPasswordAuthorization(User user, String verificationUrl) throws EmailSendingException
     {
 
-        Context context = new Context();
-        context.setVariable("verificationUrl", verificationUrl);
+        Map<String, Object> vars = Map.of(
+            "verificationUrl", verificationUrl
+        );
 
-        String htmlBody = templateEngine.process("emails/forgot_password_authorization", context);
-
-        this.sendEmail(user.getEmail(), "Reset your password", htmlBody);
+        this.sendEmailFromTemplate(
+            "emails/forgot_password_authorization",
+            vars,
+            user.getEmail(),
+            "Reset your password"
+        );
+        
     }
 
 
